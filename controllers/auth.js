@@ -46,7 +46,30 @@ export const login = async (req, res) => {
       .status(200)
       .json({ token: token, user: user });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err });
     console.log(err);
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { _id, password } = req.body;
+
+    const user = await User.findById(_id);
+
+    if (!user)
+      res.status(400).json({ success: false, error: "User does not exists!" });
+    else {
+      const salt = await bcrypt.genSalt();
+      const passwordHash = await bcrypt.hash(password, salt);
+      console.log("Hello");
+      console.log("Hello2");
+      await User.updateOne({ _id }, { password: passwordHash });
+      res
+        .status(200)
+        .json({ success: true, message: "Password updated successfully!" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error });
   }
 };
