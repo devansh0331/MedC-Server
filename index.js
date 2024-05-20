@@ -3,12 +3,14 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import authRoutes from "./routes/auth.js";
-import userRoutes from "./routes/users.js";
-import otpRoutes from "./routes/otp.js";
 import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+// routes import
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/users.js";
+import otpRoutes from "./routes/otp.js";
+import jobRoutes from "./routes/job.js";
 
 // CONFIGURATIONS
 dotenv.config();
@@ -31,6 +33,7 @@ app.use(
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/otp", otpRoutes);
+app.use("/job", jobRoutes);
 
 const PORT = process.env.PORT || 5000;
 // MONGOOSE SETUP
