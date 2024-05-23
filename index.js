@@ -3,15 +3,24 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import authRoutes from "./routes/auth.js";
-import userRoutes from "./routes/users.js";
-import otpRoutes from "./routes/otp.js";
 import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import { v2 as cloudinary } from "cloudinary";
+// routes import
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/users.js";
+import otpRoutes from "./routes/otp.js";
+import jobRoutes from "./routes/job.js";
+import postRoutes from "./routes/post.js";
 
 // CONFIGURATIONS
 dotenv.config();
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET, // Click 'View Credentials' below to copy your API secret
+});
 const app = express();
 app.use(express.json());
 app.use(helmet());
@@ -31,6 +40,8 @@ app.use(
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/otp", otpRoutes);
+app.use("/job", jobRoutes);
+app.use("/post", postRoutes);
 
 const PORT = process.env.PORT || 5000;
 // MONGOOSE SETUP
