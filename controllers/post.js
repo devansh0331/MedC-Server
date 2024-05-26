@@ -17,6 +17,7 @@ export const createPost = async (req, res) => {
       audience,
       description,
       fileURL,
+      likes: new Map(),
     });
 
     if (!post)
@@ -58,5 +59,36 @@ export const getSinglePost = async (req, res) => {
     return res
       .status(400)
       .json({ success: false, error: "Failed to get post" });
+  }
+};
+
+export const likePost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { userId } = req.body;
+
+    const post = await Post.findById(id);
+
+    const isLiked = post.likes.get(userId);
+
+    if (!post.likes) {
+      post.likes = new Map();
+    }
+
+    if (isLiked) {
+      post.likes.delete(userId);
+    } else {
+      post.likes.set(userId, true);
+    }
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      { likes: post.likes },
+      { new: true }
+    );
+
+    res.status(200).json(updatedPost);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
   }
 };

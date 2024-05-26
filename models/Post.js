@@ -1,14 +1,24 @@
 import mongoose from "mongoose";
 
-const PostSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+const PostSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    audience: String,
+    description: String,
+    fileURL: String,
+
+    likes: {
+      type: Map,
+      of: Boolean,
+    },
   },
-  audience: String,
-  description: String,
-  fileURL: String,
-});
+  {
+    timestamps: true,
+  }
+);
 
 const Post = mongoose.model("Post", PostSchema);
 export default Post;
