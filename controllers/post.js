@@ -1,4 +1,5 @@
 import Post from "../models/Post.js";
+import Comments from "../models/Comments.js";
 import { v2 as cloudinary } from "cloudinary";
 
 export const createPost = async (req, res) => {
@@ -18,13 +19,14 @@ export const createPost = async (req, res) => {
       description,
       fileURL,
       likes: new Map(),
+      comments: [],
     });
 
     if (!post)
       return res
         .status(400)
         .json({ success: false, error: "Failed to create post" });
-    else return res.status(200).json({ success: true, post });
+    else return res.status(200).json({ success: true, data: post });
   } catch (error) {
     return res
       .status(400)
@@ -39,7 +41,7 @@ export const getAllPosts = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, error: "Failed to get posts" });
-    else return res.status(200).json({ success: true, posts });
+    else return res.status(200).json({ success: true, data: posts });
   } catch (error) {
     return res
       .status(400)
@@ -54,7 +56,7 @@ export const getSinglePost = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, error: "Failed to get post" });
-    else return res.status(200).json({ success: true, post });
+    else return res.status(200).json({ success: true, data: post });
   } catch (error) {
     return res
       .status(400)
@@ -87,8 +89,49 @@ export const likePost = async (req, res) => {
       { new: true }
     );
 
-    res.status(200).json(updatedPost);
+    res.status(200).json({ success: true, data: updatedPost });
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(404).json({ success: false, error: err.message });
+  }
+};
+
+export const commentPost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const { userId, comment } = req.body;
+
+    const comments = await Comments.create({
+      userId,
+      postId,
+      comment,
+    });
+
+    const allComments = await Comments.find({ postId }).populate("userId");
+    res.status(200).json({ success: true, data: allComments });
+  } catch (err) {
+    res.status(404).json({ success: false, error: err.message });
+  }
+};
+
+export const getComments = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const comments = await Comments.find({ postId }).populate("userId");
+    console.log(comments);
+    if (comments == "") {
+      res.status(400).json({ success: false, error: "No comments Available!" });
+    } else res.status(200).json({ success: true, data: comments });
+  } catch (err) {
+    res.status(404).json({ success: false, error: err.message });
+  }
+};
+
+export const deleteComment = async (req, res) => {
+  try {
+    const commentId = req.params.id;
+    await Comments.findByIdAndDelete(commentId);
+    res.status(200).json({ success: true, message: "Deleted Successfully!" });
+  } catch (err) {
+    res.status(404).json({ success: false, error: err.message });
   }
 };
