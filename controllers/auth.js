@@ -51,6 +51,7 @@ export const login = async (req, res) => {
   }
 };
 
+// RESET PASSWORD
 export const resetPassword = async (req, res) => {
   try {
     const { _id, password } = req.body;
@@ -71,5 +72,15 @@ export const resetPassword = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, error: error });
+  }
+};
+
+// LOGOUT
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({ success: true, message: "Logged out" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err });
   }
 };
