@@ -9,12 +9,13 @@ import {
   likePost,
 } from "../controllers/post.js";
 import upload from "../middleware/upload.js";
+import { verifyToken } from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
 router.post("/create-post", upload.single("filepath"), createPost);
 router.post("/create-post-no-file", upload.none(), createPost);
-router.get("/all-posts", getAllPosts);
+router.get("/all-posts", verifyToken, getAllPosts);
 router.get("/single-post/:id", getSinglePost);
 router.post("/single-post/like/:id", likePost);
 router.post("/single-post/comment/post/:id", commentPost);

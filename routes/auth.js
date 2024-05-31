@@ -5,9 +5,9 @@ import { verifyToken } from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
-router.post("/register", register);
+router.post("/signup", register);
 // router.post("/login", verifyToken, login);
-router.post("/login", login);
+router.post("/signin", login);
 router.get("/is-user", verifyToken, async (req, res) => {
   try {
     res.status(200).json(true);

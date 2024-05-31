@@ -7,7 +7,9 @@ export const verifyToken = async (req, res, next) => {
 
     console.log("TOKEN: " + token);
     if (!token) {
-      return res.status(403).json("Access Denied");
+      return res
+        .status(403)
+        .json({ success: false, status: 403, error: "Access Denied" });
     }
 
     if (token.startsWith("Bearer ")) {
@@ -20,6 +22,6 @@ export const verifyToken = async (req, res, next) => {
     next();
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, status: 500, error: err.message });
   }
 };

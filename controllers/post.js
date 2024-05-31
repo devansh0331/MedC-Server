@@ -36,16 +36,21 @@ export const createPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find();
+    const userId = req.user;
+    const posts = await Post.find().populate("user", "name");
+    if (!userId) {
+      return res.status(400).json({ success: false, error: "Access Denied!" });
+    }
     if (!posts)
       return res
         .status(400)
         .json({ success: false, error: "Failed to get posts" });
-    else return res.status(200).json({ success: true, data: posts });
+    else
+      return res.status(200).json({ success: true, status: 200, data: posts });
   } catch (error) {
     return res
       .status(400)
-      .json({ success: false, error: "Failed to get posts" });
+      .json({ success: false, status: 400, error: "Failed to get posts" });
   }
 };
 

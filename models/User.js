@@ -14,6 +14,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  professionalBio: String,
+  about: String,
+  contact: String,
+
   friends: [
     {
       type: mongoose.Schema.Types.ObjectId,
