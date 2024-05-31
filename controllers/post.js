@@ -45,8 +45,12 @@ export const getAllPosts = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, error: "Failed to get posts" });
-    else
-      return res.status(200).json({ success: true, status: 200, data: posts });
+    else {
+      console.log(posts.length);
+      return res
+        .status(200)
+        .json({ success: true, status: 200, data: posts, userId: userId });
+    }
   } catch (error) {
     return res
       .status(400)
@@ -72,7 +76,7 @@ export const getSinglePost = async (req, res) => {
 export const likePost = async (req, res) => {
   try {
     const id = req.params.id;
-    const { userId } = req.body;
+    const userId = req.user.id;
 
     const post = await Post.findById(id);
 

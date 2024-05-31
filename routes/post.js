@@ -17,7 +17,7 @@ router.post("/create-post", upload.single("filepath"), createPost);
 router.post("/create-post-no-file", upload.none(), createPost);
 router.get("/all-posts", verifyToken, getAllPosts);
 router.get("/single-post/:id", getSinglePost);
-router.post("/single-post/like/:id", likePost);
+router.post("/single-post/like/:id", verifyToken, likePost);
 router.post("/single-post/comment/post/:id", commentPost);
 router.get("/single-post/comment/all/:id", getComments);
 router.post("/single-post/comment/delete/:id", deleteComment);
