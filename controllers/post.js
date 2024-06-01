@@ -4,7 +4,9 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const createPost = async (req, res) => {
   try {
-    const { user, audience, description } = req.body;
+    const { audience, description } = JSON.parse(req.body.data);
+    const user = req.user.id;
+
     let fileURL = "";
     console.log("Hello " + fileURL);
     if (req.file && req.file.path) {
