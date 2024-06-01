@@ -39,7 +39,9 @@ export const createPost = async (req, res) => {
 export const getAllPosts = async (req, res) => {
   try {
     const userId = req.user;
-    const posts = await Post.find().populate("user", "name");
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .populate("user", "name");
     if (!userId) {
       return res.status(400).json({ success: false, error: "Access Denied!" });
     }
@@ -49,9 +51,12 @@ export const getAllPosts = async (req, res) => {
         .json({ success: false, error: "Failed to get posts" });
     else {
       console.log(posts.length);
-      return res
-        .status(200)
-        .json({ success: true, status: 200, data: posts, userId: userId });
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        data: posts,
+        userId: userId,
+      });
     }
   } catch (error) {
     return res
