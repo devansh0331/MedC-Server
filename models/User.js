@@ -14,9 +14,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  professionalBio: String,
+  profileURL: String,
+  bio: String,
   about: String,
   contact: String,
+  linkedin: String,
+  twitter: String,
+  website: String,
+  location: String,
 
   friends: [
     {

@@ -84,3 +84,39 @@ export const logout = async (req, res) => {
     res.status(500).json({ success: false, error: err });
   }
 };
+
+export const updateAbout = async (req, res) => {
+  try {
+    const { id } = req.user.id;
+    const { about } = req.body;
+    const user = await User.findByIdAndUpdate(id, { about }, { new: true });
+    res.status(200).json({ success: true, message: user.about });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+};
+
+export const updateSocialInfo = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const { name, bio, email, location, contact, linkedin, twitter, website } =
+      req.body;
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        name,
+        bio,
+        email,
+        location,
+        contact,
+        linkedin,
+        twitter,
+        website,
+      },
+      { new: true }
+    );
+    res.status(200).json({ success: true, message: user });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+};
