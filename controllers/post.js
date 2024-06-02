@@ -111,29 +111,35 @@ export const likePost = async (req, res) => {
   }
 };
 
-export const commentPost = async (req, res) => {
+export const addComment = async (req, res) => {
   try {
     const postId = req.params.id;
-    const { userId, comment } = req.body;
+    const userId = req.user.id;
+    const { comment } = req.body;
 
-    const comments = await Comments.create({
+    const newComment = new Comments({
       userId,
       postId,
       comment,
     });
+    await newComment.save();
 
-    const allComments = await Comments.find({ postId }).populate("userId");
-    res.status(200).json({ success: true, data: allComments });
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Commented",
+    });
   } catch (err) {
-    res.status(404).json({ success: false, error: err.message });
+    res.status(400).json({ success: false, status: 400, error: err.message });
   }
 };
 
 export const getComments = async (req, res) => {
   try {
     const postId = req.params.id;
+
     const comments = await Comments.find({ postId }).populate("userId");
-    console.log(comments);
+
     if (comments == "") {
       res.status(400).json({ success: false, error: "No comments Available!" });
     } else res.status(200).json({ success: true, data: comments });
