@@ -7,6 +7,7 @@ import {
   logout,
   updateAbout,
   updateSocialInfo,
+  getUser,
 } from "../controllers/auth.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 
@@ -27,5 +28,6 @@ router.get("/logout", logout);
 router.post("/reset-password", resetPassword);
 router.post("/update-profile/about", verifyToken, updateAbout);
 router.post("/update-profile/social-info", verifyToken, updateSocialInfo);
+router.get("/profile", verifyToken, getUser);
 
 export default router;
