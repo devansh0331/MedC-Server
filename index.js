@@ -30,9 +30,9 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    // origin: process.env.CLIENT_URL,
+    origin: process.env.CLIENT_URL,
     // origin: true,
-    origin: "http://localhost:5173",
+    // origin: "http://localhost:5173",
   })
 );
 
@@ -61,6 +61,6 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-app.get("/",(req,res) =>{
+app.get("/", (req, res) => {
   res.send("server is live");
-})
+});
