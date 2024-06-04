@@ -6,7 +6,7 @@ export const createPost = async (req, res) => {
   try {
     const { audience, description } = JSON.parse(req.body.data);
     const user = req.user.id;
-
+    console.log(audience, description, user);
     let fileURL = "";
     console.log("Hello " + fileURL);
     if (req.file && req.file.path) {
@@ -23,7 +23,7 @@ export const createPost = async (req, res) => {
       likes: new Map(),
       comments: [],
     });
-
+    console.log(post);
     if (!post)
       return res
         .status(400)
@@ -67,12 +67,12 @@ export const getAllPosts = async (req, res) => {
 
 export const getSinglePost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate("user");
     if (!post)
       return res
         .status(400)
         .json({ success: false, error: "Failed to get post" });
-    else return res.status(200).json({ success: true, data: post });
+    else return res.status(200).json({ success: true, data: post, userId: req.user.id });
   } catch (error) {
     return res
       .status(400)
