@@ -10,6 +10,7 @@ import {
   getUser,
 } from "../controllers/auth.js";
 import { verifyToken } from "../middleware/verifyToken.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -27,7 +28,18 @@ router.get("/logout", logout);
 
 router.post("/reset-password", resetPassword);
 router.post("/update-profile/about", verifyToken, updateAbout);
-router.post("/update-profile/social-info", verifyToken, updateSocialInfo);
+router.post(
+  "/update-profile/social-info-no-profile",
+  verifyToken,
+  upload.none(),
+  updateSocialInfo
+);
+router.post(
+  "/update-profile/social-info",
+  verifyToken,
+  upload.single("filepath"),
+  updateSocialInfo
+);
 router.get("/profile", verifyToken, getUser);
 
 export default router;

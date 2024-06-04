@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { v2 as cloudinary } from "cloudinary";
 
 /* REGISTER USER */
 export const register = async (req, res) => {
@@ -100,21 +101,47 @@ export const updateSocialInfo = async (req, res) => {
   try {
     const id = req.user.id;
     const { name, bio, email, location, contact, linkedin, twitter, website } =
-      req.body;
-    const user = await User.findByIdAndUpdate(
-      id,
-      {
-        name,
-        bio,
-        email,
-        location,
-        contact,
-        linkedin,
-        twitter,
-        website,
-      },
-      { new: true }
-    );
+      JSON.parse(req.body.data);
+
+    let profileURL = "";
+    let user;
+    if (req.file && req.file.path) {
+      console.log(req.file.path);
+      const profile = req.file.path;
+      const result = await cloudinary.uploader.upload(profile);
+      profileURL = result.secure_url;
+      user = await User.findByIdAndUpdate(
+        id,
+        {
+          name,
+          bio,
+          email,
+          location,
+          contact,
+          linkedin,
+          twitter,
+          website,
+          profileURL,
+        },
+        { new: true }
+      );
+    } else {
+      user = await User.findByIdAndUpdate(
+        id,
+        {
+          name,
+          bio,
+          email,
+          location,
+          contact,
+          linkedin,
+          twitter,
+          website,
+        },
+        { new: true }
+      );
+    }
+
     res.status(200).json({ success: true, message: user });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
