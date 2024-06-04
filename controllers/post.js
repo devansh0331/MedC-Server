@@ -41,7 +41,8 @@ export const getAllPosts = async (req, res) => {
     const userId = req.user;
     const posts = await Post.find()
       .sort({ createdAt: -1 })
-      .populate("user", "name");
+      .populate("user", "name profileURL");
+
     if (!userId) {
       return res.status(400).json({ success: false, error: "Access Denied!" });
     }
