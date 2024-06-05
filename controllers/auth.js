@@ -2,6 +2,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { v2 as cloudinary } from "cloudinary";
+import Experience from "../models/Experience.js";
+import Achievement from "../models/Achievement.js";
+import Education from "../models/Education.js";
 
 /* REGISTER USER */
 export const register = async (req, res) => {
@@ -160,25 +163,107 @@ export const getUser = async (req, res) => {
   }
 };
 
-export const updateCarrer = async (req, res) => {
+export const addExperience = async (req, res) => {
   try {
-    const id = req.user.id;
-    const user = await User.findById(id);
-    if (req.body.experience) {
-      if (user.carrer) {
-        const { post, organization, startingMonth, endingMonth, description } =
-          req.body;
-        if (user.carrer.experience) {
-          user.carrer.experience.push({
-            post,
-            organization,
-            startingMonth,
-            endingMonth,
-            description,
-          });
-          await user.save();
-        }
-      }
-    }
-  } catch (error) {}
+    const userId = req.user.id;
+
+    const { organization, post, description, startingMonth, endingMonth } =
+      req.body;
+
+    const experience = await Experience.create({
+      userId,
+      organization,
+      post,
+      description,
+      startingMonth,
+      endingMonth,
+    });
+
+    if (!experience)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to add experience" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Experience Added Successfully" });
+  } catch (error) {
+    res.status(400).json({ success: false, error: "Failed to add experience" });
+  }
+};
+export const addAchievement = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { achievement, description } = req.body;
+
+    const newAchievement = await Achievement.create({
+      userId,
+      achievement,
+      description,
+    });
+
+    if (!newAchievement)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to add achievement" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Achievement Added Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to add achievement" });
+  }
+};
+export const addCertificate = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { certificate, issuer, description } = req.body;
+
+    const newCertificate = await Experience.create({
+      userId,
+      certificate,
+      issuer,
+      description,
+    });
+
+    if (!newCertificate)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to add certificate" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Certificate Added Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to add certificate" });
+  }
+};
+export const addEducation = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { organization, course, startingMonth, endingMonth } = req.body;
+
+    const newEducation = await Education.create({
+      userId,
+      organization,
+      course,
+      startingMonth,
+      endingMonth,
+    });
+
+    if (!newEducation)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to add education" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Education Added Successfully" });
+  } catch (error) {
+    res.status(400).json({ success: false, error: "Failed to add education" });
+  }
 };
