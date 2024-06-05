@@ -8,6 +8,14 @@ import {
   updateAbout,
   updateSocialInfo,
   getUser,
+  addEducation,
+  addCertificate,
+  addExperience,
+  addAchievement,
+  updateAchievement,
+  updateExperience,
+  updateCertificate,
+  updateEducation,
 } from "../controllers/auth.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import upload from "../middleware/upload.js";
@@ -41,5 +49,15 @@ router.post(
   updateSocialInfo
 );
 router.get("/profile", verifyToken, getUser);
+
+router.post("/update-profile/add/achievement", verifyToken, addAchievement);
+router.post("/update-profile/add/experience", verifyToken, addExperience);
+router.post("/update-profile/add/certificate", verifyToken, addCertificate);
+router.post("/update-profile/add/education", verifyToken, addEducation);
+
+router.post("/update-profile/edit/achievement/:id", updateAchievement);
+router.post("/update-profile/edit/experience/:id", updateExperience);
+router.post("/update-profile/edit/certificate/:id", updateCertificate);
+router.post("/update-profile/edit/education/:id", updateEducation);
 
 export default router;
