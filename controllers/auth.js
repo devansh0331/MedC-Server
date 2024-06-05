@@ -191,6 +191,35 @@ export const addExperience = async (req, res) => {
     res.status(400).json({ success: false, error: "Failed to add experience" });
   }
 };
+export const updateExperience = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const { organization, post, description, startingMonth, endingMonth } =
+      req.body;
+
+    const experience = await Experience.findByIdAndUpdate(id, {
+      organization,
+      post,
+      description,
+      startingMonth,
+      endingMonth,
+    });
+
+    if (!experience)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to update experience" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Experience Updated Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to update experience" });
+  }
+};
 export const addAchievement = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -214,6 +243,30 @@ export const addAchievement = async (req, res) => {
     res
       .status(400)
       .json({ success: false, error: "Failed to add achievement" });
+  }
+};
+export const updateAchievement = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { achievement, description } = req.body;
+
+    const newAchievement = await Achievement.findByIdAndUpdate(id, {
+      achievement,
+      description,
+    });
+
+    if (!newAchievement)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to update achievement" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Achievement Updated Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to update achievement" });
   }
 };
 export const addCertificate = async (req, res) => {
@@ -242,6 +295,31 @@ export const addCertificate = async (req, res) => {
       .json({ success: false, error: "Failed to add certificate" });
   }
 };
+export const updateCertificate = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { certificate, issuer, description } = req.body;
+
+    const newCertificate = await Experience.findByIdAndUpdate(id, {
+      certificate,
+      issuer,
+      description,
+    });
+
+    if (!newCertificate)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to update certificate" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Certificate Updated Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to update certificate" });
+  }
+};
 export const addEducation = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -265,5 +343,31 @@ export const addEducation = async (req, res) => {
         .json({ success: true, message: "Education Added Successfully" });
   } catch (error) {
     res.status(400).json({ success: false, error: "Failed to add education" });
+  }
+};
+export const updateEducation = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { organization, course, startingMonth, endingMonth } = req.body;
+
+    const newEducation = await Education.findByIdAndUpdate(id, {
+      organization,
+      course,
+      startingMonth,
+      endingMonth,
+    });
+
+    if (!newEducation)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to update education" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Education Updated Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to update education" });
   }
 };
