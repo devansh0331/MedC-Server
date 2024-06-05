@@ -29,6 +29,30 @@ const UserSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  achievement: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Achievement",
+    },
+  ],
+  certificate: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "certificate",
+    },
+  ],
+  education: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Education",
+    },
+  ],
+  experience: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Experience",
+    },
+  ],
 });
 
 const User = mongoose.model("User", UserSchema);

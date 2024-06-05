@@ -159,3 +159,26 @@ export const getUser = async (req, res) => {
     res.status(404).json({ success: false, message: err.message });
   }
 };
+
+export const updateCarrer = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const user = await User.findById(id);
+    if (req.body.experience) {
+      if (user.carrer) {
+        const { post, organization, startingMonth, endingMonth, description } =
+          req.body;
+        if (user.carrer.experience) {
+          user.carrer.experience.push({
+            post,
+            organization,
+            startingMonth,
+            endingMonth,
+            description,
+          });
+          await user.save();
+        }
+      }
+    }
+  } catch (error) {}
+};
