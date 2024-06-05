@@ -220,6 +220,26 @@ export const updateExperience = async (req, res) => {
       .json({ success: false, error: "Failed to update experience" });
   }
 };
+export const deleteExperience = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const experience = await Experience.findByIdAndDelete(id);
+
+    if (!experience)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to delete experience" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Experience Deleted Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to delete experience" });
+  }
+};
 export const addAchievement = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -267,6 +287,26 @@ export const updateAchievement = async (req, res) => {
     res
       .status(400)
       .json({ success: false, error: "Failed to update achievement" });
+  }
+};
+export const deleteAchievement = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const achievement = await Achievement.findByIdAndDelete(id);
+
+    if (!achievement)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to delete achievement" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Achievement Deleted Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to delete achievement" });
   }
 };
 export const addCertificate = async (req, res) => {
@@ -320,6 +360,26 @@ export const updateCertificate = async (req, res) => {
       .json({ success: false, error: "Failed to update certificate" });
   }
 };
+export const deleteCertificate = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const certificate = await Experience.findByIdAndDelete(id);
+
+    if (!certificate)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to delete certificate" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Certificate Deleted Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to delete certificate" });
+  }
+};
 export const addEducation = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -369,5 +429,25 @@ export const updateEducation = async (req, res) => {
     res
       .status(400)
       .json({ success: false, error: "Failed to update education" });
+  }
+};
+export const deleteEducation = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const education = await Education.findByIdAndDelete(id);
+
+    if (!education)
+      res
+        .status(400)
+        .json({ success: false, error: "Failed to delete education" });
+    else
+      res
+        .status(200)
+        .json({ success: true, message: "Education Deleted Successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, error: "Failed to delete education" });
   }
 };

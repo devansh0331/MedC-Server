@@ -16,6 +16,10 @@ import {
   updateExperience,
   updateCertificate,
   updateEducation,
+  deleteAchievement,
+  deleteExperience,
+  deleteCertificate,
+  deleteEducation,
 } from "../controllers/auth.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import upload from "../middleware/upload.js";
@@ -59,5 +63,10 @@ router.post("/update-profile/edit/achievement/:id", updateAchievement);
 router.post("/update-profile/edit/experience/:id", updateExperience);
 router.post("/update-profile/edit/certificate/:id", updateCertificate);
 router.post("/update-profile/edit/education/:id", updateEducation);
+
+router.post("/update-profile/delete/achievement/:id", deleteAchievement);
+router.post("/update-profile/delete/experience/:id", deleteExperience);
+router.post("/update-profile/delete/certificate/:id", deleteCertificate);
+router.post("/update-profile/delete/education/:id", deleteEducation);
 
 export default router;
