@@ -163,6 +163,43 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const getUserExperience = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const experience = await Experience.find({ userId: id });
+    res.status(200).json({ success: true, data: experience });
+  } catch (err) {
+    res.status(404).json({ success: false, message: err.message });
+  }
+};
+export const getUserEducation = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const education = await Education.find({ userId: id });
+    res.status(200).json({ success: true, data: education });
+  } catch (err) {
+    res.status(404).json({ success: false, message: err.message });
+  }
+};
+export const getUserAchievement = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const achievement = await Achievement.find({ userId: id });
+    res.status(200).json({ success: true, data: achievement });
+  } catch (err) {
+    res.status(404).json({ success: false, message: err.message });
+  }
+};
+export const getUserCertificate = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const certificate = await Certificate.find({ userId: id });
+    res.status(200).json({ success: true, data: certificate });
+  } catch (err) {
+    res.status(404).json({ success: false, message: err.message });
+  }
+};
+
 export const addExperience = async (req, res) => {
   try {
     const userId = req.user.id;

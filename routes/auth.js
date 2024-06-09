@@ -20,6 +20,10 @@ import {
   deleteExperience,
   deleteCertificate,
   deleteEducation,
+  getUserAchievement,
+  getUserExperience,
+  getUserCertificate,
+  getUserEducation,
 } from "../controllers/auth.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import upload from "../middleware/upload.js";
@@ -53,6 +57,11 @@ router.post(
   updateSocialInfo
 );
 router.get("/profile", verifyToken, getUser);
+
+router.get("/update-profile/get/achievement", verifyToken, getUserAchievement);
+router.get("/update-profile/get/experience", verifyToken, getUserExperience);
+router.get("/update-profile/get/certificate", verifyToken, getUserCertificate);
+router.get("/update-profile/get/education", verifyToken, getUserEducation);
 
 router.post("/update-profile/add/achievement", verifyToken, addAchievement);
 router.post("/update-profile/add/experience", verifyToken, addExperience);

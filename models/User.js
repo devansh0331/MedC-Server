@@ -38,7 +38,7 @@ const UserSchema = new mongoose.Schema({
   certificate: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "certificate",
+      ref: "Certificate",
     },
   ],
   education: [
