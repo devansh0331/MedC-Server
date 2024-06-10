@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
-app.use(cookieParser({ secure: true }));
+app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
