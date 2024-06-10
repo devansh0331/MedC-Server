@@ -41,6 +41,8 @@ app.use(
   })
 );
 
+console.log(process.env.CLIENT_URL);
+
 // ROUTES
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
