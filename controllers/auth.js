@@ -5,6 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 import Experience from "../models/Experience.js";
 import Achievement from "../models/Achievement.js";
 import Education from "../models/Education.js";
+import Certificate from "../models/Certificate.js";
 
 /* REGISTER USER */
 export const register = async (req, res) => {
@@ -351,7 +352,7 @@ export const addCertificate = async (req, res) => {
     const userId = req.user.id;
     const { certificate, issuer, description } = req.body;
 
-    const newCertificate = await Experience.create({
+    const newCertificate = await Certificate.create({
       userId,
       certificate,
       issuer,
@@ -377,7 +378,7 @@ export const updateCertificate = async (req, res) => {
     const id = req.params.id;
     const { certificate, issuer, description } = req.body;
 
-    const newCertificate = await Experience.findByIdAndUpdate(id, {
+    const newCertificate = await Certificate.findByIdAndUpdate(id, {
       certificate,
       issuer,
       description,
@@ -401,7 +402,7 @@ export const deleteCertificate = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const certificate = await Experience.findByIdAndDelete(id);
+    const certificate = await Certificate.findByIdAndDelete(id);
 
     if (!certificate)
       res
