@@ -5,7 +5,7 @@ const AchievementSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  achivement: String,
+  achievement: String,
   description: String,
   url: String,
 });
