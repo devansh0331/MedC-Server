@@ -6,10 +6,13 @@ export const verifyToken = async (req, res, next) => {
   try {
     // let { token } = req.header("Authorization");
     // var token = ExpressCookies({ read: token });
-    var token = req.cookies.token;
+    // var token = req.cookies.token;
+    var token = req.header("Authorization");
+    // var cookies = JSON.stringify(req);
     // const authHeader = req.headers;
     // console.log(authHeader);
     console.log("TOKEN: " + token);
+    // console.log("COOKIES: " + cookies);
     if (!token) {
       return res
         .status(403)

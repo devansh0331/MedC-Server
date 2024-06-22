@@ -23,12 +23,16 @@ const UserSchema = new mongoose.Schema({
   website: String,
   location: String,
 
-  friends: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
+  friends: {
+    type: Map,
+    of: Boolean,
+  },
+
+  pending: {
+    type: Map,
+    of: Boolean,
+  },
+
   achievement: [
     {
       type: mongoose.Schema.Types.ObjectId,
