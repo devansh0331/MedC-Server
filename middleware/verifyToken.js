@@ -1,18 +1,11 @@
 import jwt from "jsonwebtoken";
-import Cookies from "js-cookie";
-import { ExpressCookies } from "../index.js";
 
 export const verifyToken = async (req, res, next) => {
   try {
-    // let { token } = req.header("Authorization");
-    // var token = ExpressCookies({ read: token });
-    // var token = req.cookies.token;
-    var token = req.header("Authorization");
-    // var cookies = JSON.stringify(req);
-    // const authHeader = req.headers;
-    // console.log(authHeader);
+    var token = req.headers("Authorization");
+
     console.log("TOKEN: " + token);
-    // console.log("COOKIES: " + cookies);
+
     if (!token) {
       return res
         .status(403)
