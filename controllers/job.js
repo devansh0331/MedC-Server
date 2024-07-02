@@ -75,3 +75,15 @@ export const getSingleJob = async (req, res) => {
     return res.status(400).json({ success: false, error: "No job found!" });
   }
 };
+
+export const deleteJob = async (req, res) => {
+  try {
+    const _id = req.params.id;
+    const job = await Job.findByIdAndDelete(_id);
+    if (!job)
+      return res.status(400).json({ success: false, error: "No job found!" });
+    else return res.status(200).json({ success: true, job });
+  } catch (error) {
+    return res.status(400).json({ success: false, error: "No job found!" });
+  }
+};
