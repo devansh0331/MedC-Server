@@ -24,6 +24,7 @@ import {
   getUserExperience,
   getUserCertificate,
   getUserEducation,
+  signInWithGoogle,
 } from "../controllers/auth.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import upload from "../middleware/upload.js";
@@ -31,6 +32,7 @@ import upload from "../middleware/upload.js";
 const router = express.Router();
 
 router.post("/signup", register);
+router.post("/signin-with-google", signInWithGoogle);
 // router.post("/login", verifyToken, login);
 router.post("/signin", login);
 router.get("/is-user", verifyToken, async (req, res) => {

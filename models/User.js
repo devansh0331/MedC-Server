@@ -14,6 +14,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isGoogleSignIn: {
+    type: Boolean,
+    default: false,
+  },
   profileURL: String,
   bio: String,
   about: String,

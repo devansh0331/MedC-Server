@@ -17,6 +17,15 @@ export const register = async (req, res) => {
       password,
     } = req.body;
 
+    try {
+      const isUser = await User.findOne({ email });
+      if (isUser) {
+        return res
+          .status(400)
+          .json({ success: false, error: "User already exists" });
+      }
+    } catch (error) {}
+
     const salt = await bcrypt.genSalt();
 
     // Password converted as per Hash Function
@@ -35,23 +44,92 @@ export const register = async (req, res) => {
   }
 };
 
+/* SIGNIN WITH GOOGLE */
+export const signInWithGoogle = async (req, res) => {
+  try {
+    const { token } = req.body;
+    console.log("Token", token);
+    const { email, name, picture, email_verified } = jwt.decode(token);
+    const user = await User.findOne({ email });
+
+    if (email_verified == false)
+      res.status(400).json({ success: false, error: "Email not verified" });
+
+    if (user) {
+      const jwttoken = jwt.sign(
+        {
+          id: user._id,
+        },
+        process.env.JWT_SECRET
+      );
+      res.status(200).json({
+        success: true,
+        user,
+        token: jwttoken,
+        message: "Logged In Successfully",
+      });
+    } else {
+      const salt = await bcrypt.genSalt();
+
+      // Password converted as per Hash Function
+      const passwordHash = await bcrypt.hash(
+        process.env.GOOGLE_SIGNUP_PASSWORD,
+        salt
+      );
+      const newUser = new User({
+        name,
+        email,
+        password: passwordHash,
+        profileURL: picture,
+        isGoogleSignIn: true,
+      });
+      const savedUser = await newUser.save();
+      const jwttoken = jwt.sign(
+        {
+          id: savedUser._id,
+        },
+        process.env.JWT_SECRET
+      );
+      res.status(200).json({
+        success: true,
+        user: savedUser,
+        token: jwttoken,
+        message: "Account Created Successfully",
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
 /* LOGGING IN */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: "User does not exist. " });
+
+    if (!user)
+      return res
+        .status(400)
+        .json({ success: false, error: "User does not exist. " });
+    if (user.isGoogleSignIn == true)
+      return res
+        .status(400)
+        .json({ success: false, error: "Please verify your email" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
+    if (!isMatch)
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials. " });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     delete user.password;
     res // res.status(200).json({ token, user: user.email});
       .status(200)
-      .json({ token: token, user: user });
+      .json({ success: true, token: token, user: user });
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ success: false, error: err });
     console.log(err);
   }
 };
