@@ -7,12 +7,14 @@ import {
   friendAction,
   friendRequests,
   getAllFriends,
+  getAllUser,
   getUser,
 } from "../controllers/users.js";
 
 const router = express.Router();
 
-router.get("/:id", verifyToken, getUser);
+router.get("/all-user", verifyToken, getAllUser);
+router.get("/single-user/:id", verifyToken, getUser);
 router.post("/friend-action/:id", friendAction);
 router.post("/friends/all", getAllFriends);
 router.post("/friend/add-friend/:id", addFriend);

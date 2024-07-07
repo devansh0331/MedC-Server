@@ -10,7 +10,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 // routes import
 import authRoutes from "./routes/auth.js";
-import userRoutes from "./routes/users.js";
+import usersRoutes from "./routes/users.js";
 import otpRoutes from "./routes/otp.js";
 import jobRoutes from "./routes/job.js";
 import postRoutes from "./routes/post.js";
@@ -43,7 +43,7 @@ console.log(process.env.CLIENT_URL);
 
 // ROUTES
 app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
+app.use("/users", usersRoutes);
 app.use("/otp", otpRoutes);
 app.use("/job", jobRoutes);
 app.use("/post", postRoutes);

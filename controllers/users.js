@@ -10,6 +10,21 @@ export const getUser = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+/* READ */
+export const getAllUser = async (req, res) => {
+  try {
+    const user = req.user.id;
+    if (!user) res.status(400).json({ success: false, error: "Access Denied" });
+    const users = await User.find(
+      {},
+      { name: 1, _id: 0, location: 1, bio: 1, profileURL: 1 }
+    ).limit(15);
+
+    res.status(200).json({ success: true, data: users });
+  } catch (err) {
+    res.status(404).json({ success: false, error: err.message });
+  }
+};
 
 /* POST */
 export const friendAction = async (req, res) => {
