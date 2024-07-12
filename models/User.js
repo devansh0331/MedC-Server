@@ -27,14 +27,9 @@ const UserSchema = new mongoose.Schema({
   website: String,
   location: String,
 
-  friends: {
-    type: Map,
-    of: Boolean,
-  },
-
-  pending: {
-    type: Map,
-    of: Boolean,
+  friendList: {
+    type: mongoose.Schema.ObjectId,
+    ref: "FriendListStatus",
   },
 
   achievement: [

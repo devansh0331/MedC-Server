@@ -1,13 +1,19 @@
+import FriendListStatus from "../models/FriendStatus.js";
 import User from "../models/User.js";
 
 /* READ */
 export const getUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id).populate("friends");
-    res.status(200).json(user);
+    const id = req.params.id;
+    const user = await User.findById(id, {
+      password: 0,
+      isGoogleSignIn: 0,
+    }).populate("friends");
+    if (!user)
+      res.status(400).json({ success: false, error: "User not found" });
+    res.status(200).json({ success: true, data: user });
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(404).json({ success: false, error: err.message });
   }
 };
 /* READ */
@@ -26,113 +32,97 @@ export const getAllUser = async (req, res) => {
   }
 };
 
-/* POST */
-export const friendAction = async (req, res) => {
+export const sendRequest = async (req, res) => {
   try {
-    const { id } = req.body;
-    const friendId = req.params.id;
-    const user = await User.findById(id);
-    if (!user.friends) {
-      user.friends = [];
+    const userId = "66593e0052fcb6e5f19afdff"; //req.user.id;
+    const friendId = "66502d9022d3c10ef958c02a"; // req.params.id;
+    let userInFriendList = await FriendListStatus.findOne({ userId });
+    let friendInFriendList = await FriendListStatus.findOne({
+      userId: friendId,
+    });
+
+    if (!userInFriendList) {
+      userInFriendList = await FriendListStatus.create({
+        userId,
+      });
+
+      userInFriendList.friendStatus = new Map();
+
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { friendList: userInFriendList._id },
+        { new: true }
+      );
+      // console.log(user.friendList);
     }
+    if (!friendInFriendList) {
+      friendInFriendList = await FriendListStatus.create({
+        userId: friendId,
+      });
 
-    const isFriend = user.friends.includes(friendId);
-    console.log(isFriend);
+      friendInFriendList.friendStatus = new Map();
+      const friend = await User.findByIdAndUpdate(
+        friendId,
+        { friendList: friendInFriendList._id },
+        { new: true }
+      );
+      // console.log(friend.friendList);
+    }
+    // console.log(userInFriendList);
+    const checkFriendOfUser = userInFriendList.friendStatus.get(friendId);
+    const checkUserOfFriend = friendInFriendList.friendStatus.get(userId);
 
-    if (!isFriend) user.friends.push(friendId);
-    else user.friends.pop(friendId);
-
-    await user.save();
-
-    res.status(200).json({ success: true, message: user.friends });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
+    if (!checkFriendOfUser) {
+      userInFriendList.friendStatus.set(friendId, 1);
+    } else if (checkFriendOfUser) {
+      if (checkFriendOfUser.status == 1 || checkFriendOfUser == 3)
+        userInFriendList.friendStatus.delete(friendId);
+    }
+    if (!checkUserOfFriend) {
+      friendInFriendList.friendStatus.set(userId, 2);
+    } else if (checkUserOfFriend.status == 2 || checkUserOfFriend == 3) {
+      friendInFriendList.friendStatus.delete(userId);
+    }
+    await FriendListStatus.findByIdAndUpdate(userInFriendList._id, {
+      friendStatus: userInFriendList.friendStatus,
+    });
+    await FriendListStatus.findByIdAndUpdate(friendInFriendList._id, {
+      friendStatus: friendInFriendList.friendStatus,
+    });
+    // console.log(userInFriendList);
+  } catch (error) {
+    console.log(error.message);
   }
 };
 
-/* POST */
-export const getAllFriends = async (req, res) => {
+export const acceptRequest = async (req, res) => {
   try {
-    const { id } = req.body;
-    const user = await User.findById(id).populate("friends");
-    res.status(200).json({ success: true, message: user.friends });
-  } catch (err) {
-    res.status(404).json({ success: false, error: err.message });
-  }
-};
+    const userId = "66502d9022d3c10ef958c02a"; //req.user.id;
+    const friendId = "66593e0052fcb6e5f19afdff"; // req.params.id;
 
-export const addFriend = async (req, res) => {
-  try {
-    const friendId = req.params.id;
-    console.log(friendId);
-    const { id } = req.body;
+    const userInFriendList = await FriendListStatus.findOne({
+      userId,
+    });
+    const friendInFriendList = await FriendListStatus.findOne({
+      userId: friendId,
+    });
 
-    const user = await User.findById(id);
-
-    const isRequested = user.pending;
-
-    if (!user.pending) {
-      user.pending = new Map();
-    }
-
-    if (isRequested) {
-      user.pending.delete(friendId);
+    if (
+      userInFriendList.friendStatus.get(friendId) == 2 &&
+      friendInFriendList.friendStatus.get(userId) == 1
+    ) {
+      userInFriendList.friendStatus.set(friendId, 3);
+      friendInFriendList.friendStatus.set(userId, 3);
+      await FriendListStatus.findByIdAndUpdate(userInFriendList._id, {
+        friendStatus: userInFriendList.friendStatus,
+      });
+      await FriendListStatus.findByIdAndUpdate(friendInFriendList._id, {
+        friendStatus: friendInFriendList.friendStatus,
+      });
     } else {
-      user.pending.set(friendId, true);
+      console.log("Failed to accept request");
     }
-
-    const updatedRequest = await User.findByIdAndUpdate(
-      id,
-      { pending: user.pending },
-      { new: true }
-    );
-
-    res.status(200).json({ success: true, data: updatedRequest });
-  } catch (err) {
-    res.status(404).json({ success: false, error: err.message });
-  }
-};
-
-export const friendRequests = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const user = await User.findById(userId).populate("pending");
-    res.status(200).json({ success: true, data: user.pending });
-  } catch (err) {
-    res.status(404).json({ success: false, error: err.message });
-  }
-};
-
-export const acceptFriendRequest = async (req, res) => {
-  try {
-    const friendId = req.params.id;
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    const friend = await User.findById(friendId);
-    if (user.pending.get(friendId)) {
-      user.pending.delete(friendId);
-      user.friends.push(friendId);
-      friend.friends.push(userId);
-    }
-    await user.save();
-    await friend.save();
-    res.status(200).json({ success: true, data: user });
-  } catch (err) {
-    res.status(404).json({ success: false, error: err.message });
-  }
-};
-
-export const deleteFriendRequest = async (req, res) => {
-  try {
-    const friendId = req.params.id;
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    if (user.pending.get(friendId)) {
-      user.pending.delete(friendId);
-    }
-    await user.save();
-    res.status(200).json({ success: true, data: user });
-  } catch (err) {
-    res.status(404).json({ success: false, error: err.message });
+  } catch (error) {
+    console.log(error.message);
   }
 };
