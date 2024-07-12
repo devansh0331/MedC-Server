@@ -235,7 +235,7 @@ export const getUser = async (req, res) => {
   try {
     const id = req.user.id;
     console.log(id);
-    const user = await User.findById(id).populate("friends");
+    const user = await User.findById(id);
     res.status(200).json({ success: true, data: user });
   } catch (err) {
     res.status(404).json({ success: false, message: err.message });
