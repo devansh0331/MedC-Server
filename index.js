@@ -43,7 +43,7 @@ console.log(process.env.CLIENT_URL);
 
 // ROUTES
 app.use("/auth", authRoutes);
-app.use("/users", usersRoutes);
+app.use("/user", usersRoutes);
 app.use("/otp", otpRoutes);
 app.use("/job", jobRoutes);
 app.use("/post", postRoutes);

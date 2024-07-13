@@ -11,7 +11,7 @@ const friendListStatusSchema = new mongoose.Schema({
     enums: [
       0, // neutral / want to request
       1, // requested
-      2, // pending
+      2, // received
       3, // friends
     ],
   },

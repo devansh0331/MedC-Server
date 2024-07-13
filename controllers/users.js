@@ -126,3 +126,122 @@ export const acceptRequest = async (req, res) => {
     console.log(error.message);
   }
 };
+
+export const checkFriendStatus = async () => {
+  try {
+    const userId = "66502d9022d3c10ef958c02a";
+    const friendId = "66593e0052fcb6e5f19afdff";
+    const userInFriendList = await FriendListStatus.findOne({
+      userId,
+    });
+    if (!userInFriendList) {
+      return res.status(200).json({ success: true, data: 0 });
+    } else {
+      const friendInUser = userInFriendList.friendStatus(friendId);
+      return res.status(200).json({ success: true, data: friendInUser });
+    }
+  } catch (err) {
+    return res.status(400).json({ success: false, error: err.message });
+  }
+};
+
+export const getReceivedRequests = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const userInFriendList = await FriendListStatus.findOne({
+      userId,
+    });
+
+    var arr = [];
+
+    if (!userInFriendList) {
+      return res
+        .status(400)
+        .json({ success: false, error: "No pending requests" });
+    } else {
+      userInFriendList.friendStatus.forEach((element, value) => {
+        if (element === 2) {
+          arr.push({ _id: value });
+          console.log(arr);
+        }
+      });
+      if (arr.length > 0) {
+        const users = await User.find({ $or: arr });
+        return res.status(400).json({ success: true, data: users });
+      } else {
+        return res
+          .status(400)
+          .json({ success: false, error: "No pending requests!" });
+      }
+    }
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+};
+export const getSentRequests = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const userInFriendList = await FriendListStatus.findOne({
+      userId,
+    });
+
+    var arr = [];
+
+    if (!userInFriendList) {
+      return res
+        .status(400)
+        .json({ success: false, error: "No sent requests" });
+    } else {
+      userInFriendList.friendStatus.forEach((element, value) => {
+        if (element === 1) {
+          arr.push({ _id: value });
+          console.log(arr);
+        }
+      });
+      if (arr.length > 0) {
+        const users = await User.find({ $or: arr });
+        return res.status(400).json({ success: true, data: users });
+      } else {
+        return res
+          .status(400)
+          .json({ success: false, error: "No sent requests!" });
+      }
+    }
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+};
+export const getConnections = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log(userId);
+    const singleUser = await User.findById(userId);
+    console.log(singleUser);
+    const userInFriendList = await FriendListStatus.findOne({
+      userId,
+    });
+
+    var arr = [];
+
+    if (!userInFriendList) {
+      return res.status(400).json({ success: false, error: "No connections!" });
+    } else {
+      userInFriendList.friendStatus.forEach((element, value) => {
+        if (element === 3) {
+          arr.push({ _id: value });
+          console.log(arr);
+        }
+      });
+      if (arr.length > 0) {
+        const users = await User.find({ $or: arr });
+        return res.status(400).json({ success: true, data: users });
+      } else {
+        return res
+          .status(400)
+          .json({ success: false, error: "No connections!" });
+      }
+    }
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+};
