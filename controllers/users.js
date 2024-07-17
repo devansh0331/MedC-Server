@@ -2,16 +2,21 @@ import FriendListStatus from "../models/FriendStatus.js";
 import User from "../models/User.js";
 
 /* READ */
-export const getUser = async (req, res) => {
+export const getSingleUser = async (req, res) => {
   try {
-    const id = req.params.id;
-    const user = await User.findById(id, {
+    const userId = req.params.id;
+    console.log("User Id: ", userId);
+    const id = req.user.id;
+    console.log("Id: ", id);
+    const user = await User.findById(userId, {
       password: 0,
       isGoogleSignIn: 0,
-    }).populate("friends");
+    }).populate("friendList");
     if (!user)
       res.status(400).json({ success: false, error: "User not found" });
-    res.status(200).json({ success: true, data: user });
+    res
+      .status(200)
+      .json({ success: true, data: user, isExisting: userId == id });
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
   }
@@ -23,7 +28,7 @@ export const getAllUser = async (req, res) => {
     if (!user) res.status(400).json({ success: false, error: "Access Denied" });
     const users = await User.find(
       {},
-      { name: 1, _id: 0, location: 1, bio: 1, profileURL: 1 }
+      { name: 1, _id: 1, location: 1, bio: 1, profileURL: 1 }
     ).limit(15);
 
     res.status(200).json({ success: true, data: users });

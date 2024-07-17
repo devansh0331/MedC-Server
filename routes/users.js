@@ -6,14 +6,14 @@ import {
   getConnections,
   getReceivedRequests,
   getSentRequests,
-  getUser,
+  getSingleUser,
   sendRequest,
 } from "../controllers/users.js";
 
 const router = express.Router();
 
 router.get("/all-user", verifyToken, getAllUser);
-router.get("/single-user/:id", verifyToken, getUser);
+router.get("/single-user/:id", verifyToken, getSingleUser);
 router.post("/send-request", sendRequest);
 router.post("/accept-request", acceptRequest);
 router.get("/received-requests", verifyToken, getReceivedRequests);
