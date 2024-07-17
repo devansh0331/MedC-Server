@@ -132,21 +132,28 @@ export const acceptRequest = async (req, res) => {
   }
 };
 
-export const checkFriendStatus = async () => {
+export const checkFriendStatus = async (req, res) => {
   try {
-    const userId = "66502d9022d3c10ef958c02a";
-    const friendId = "66593e0052fcb6e5f19afdff";
+    const userId = req.user.id;
+    const friendId = req.params.id;
+
+    console.log("friend id: ", friendId);
+
     const userInFriendList = await FriendListStatus.findOne({
       userId,
     });
+
+    console.log(userInFriendList);
     if (!userInFriendList) {
       return res.status(200).json({ success: true, data: 0 });
     } else {
-      const friendInUser = userInFriendList.friendStatus(friendId);
-      return res.status(200).json({ success: true, data: friendInUser });
+      const friendInUser = userInFriendList.friendStatus.get(friendId);
+      if (!friendInUser)
+        return res.status(200).json({ success: true, data: 0 });
+      else return res.status(200).json({ success: true, data: friendInUser });
     }
   } catch (err) {
-    return res.status(400).json({ success: false, error: err.message });
+    res.status(400).json({ success: false, error: err.message });
   }
 };
 
