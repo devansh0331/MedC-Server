@@ -14,6 +14,7 @@ import usersRoutes from "./routes/users.js";
 import otpRoutes from "./routes/otp.js";
 import jobRoutes from "./routes/job.js";
 import postRoutes from "./routes/post.js";
+import adminRoutes from "./routes/admin.js";
 
 // CONFIGURATIONS
 dotenv.config();
@@ -47,6 +48,7 @@ app.use("/user", usersRoutes);
 app.use("/otp", otpRoutes);
 app.use("/job", jobRoutes);
 app.use("/post", postRoutes);
+app.use("/admin", adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 // MONGOOSE SETUP

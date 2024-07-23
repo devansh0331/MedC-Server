@@ -73,11 +73,33 @@ export const getSinglePost = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, error: "Failed to get post" });
-    else return res.status(200).json({ success: true, data: post, userId: req.user.id });
+    else
+      return res
+        .status(200)
+        .json({ success: true, data: post, userId: req.user.id });
   } catch (error) {
     return res
       .status(400)
       .json({ success: false, error: "Failed to get post" });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findByIdAndDelete({ _id: postId });
+    if (!post)
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to delete post!" });
+    else
+      return res
+        .status(200)
+        .json({ success: true, message: "Post deleted successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to delete post!" });
   }
 };
 
