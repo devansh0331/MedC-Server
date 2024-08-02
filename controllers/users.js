@@ -11,12 +11,13 @@ export const getSingleUser = async (req, res) => {
     const user = await User.findById(userId, {
       password: 0,
       isGoogleSignIn: 0,
-    }).populate("friendList");
+    }).populate("experience");
     if (!user)
       res.status(400).json({ success: false, error: "User not found" });
+    console.log("Single User: " + user.experience);
     res
       .status(200)
-      .json({ success: true, data: user, isExisting: userId == id });
+      .json({ success: true, user: user, isExisting: userId == id });
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
   }
