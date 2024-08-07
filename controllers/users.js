@@ -40,8 +40,9 @@ export const getAllUser = async (req, res) => {
 
 export const sendRequest = async (req, res) => {
   try {
-    const userId = "66593e0052fcb6e5f19afdff"; //req.user.id;
-    const friendId = "66502d9022d3c10ef958c02a"; // req.params.id;
+    const userId = req.user.id; //"66593e0052fcb6e5f19afdff";
+    const friendId = req.params.id; //"66502d9022d3c10ef958c02a";
+    console.log(req.user.id, req.params.id);
     let userInFriendList = await FriendListStatus.findOne({ userId });
     let friendInFriendList = await FriendListStatus.findOne({
       userId: friendId,
@@ -96,6 +97,7 @@ export const sendRequest = async (req, res) => {
       friendStatus: friendInFriendList.friendStatus,
     });
     // console.log(userInFriendList);
+    return res.json({ success: true });
   } catch (error) {
     console.log(error.message);
   }
@@ -103,8 +105,8 @@ export const sendRequest = async (req, res) => {
 
 export const acceptRequest = async (req, res) => {
   try {
-    const userId = "66502d9022d3c10ef958c02a"; //req.user.id;
-    const friendId = "66593e0052fcb6e5f19afdff"; // req.params.id;
+    const userId = req.user.id; // "66502d9022d3c10ef958c02a";
+    const friendId = req.params.id; // "66593e0052fcb6e5f19afdff";
 
     const userInFriendList = await FriendListStatus.findOne({
       userId,
@@ -125,6 +127,7 @@ export const acceptRequest = async (req, res) => {
       await FriendListStatus.findByIdAndUpdate(friendInFriendList._id, {
         friendStatus: friendInFriendList.friendStatus,
       });
+      return res.json({ success: true });
     } else {
       console.log("Failed to accept request");
     }
