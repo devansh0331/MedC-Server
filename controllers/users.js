@@ -82,12 +82,21 @@ export const sendRequest = async (req, res) => {
     if (!checkFriendOfUser) {
       userInFriendList.friendStatus.set(friendId, 1);
     } else if (checkFriendOfUser) {
-      if (checkFriendOfUser.status == 1 || checkFriendOfUser == 3)
-        userInFriendList.friendStatus.delete(friendId);
+      if (
+        checkFriendOfUser.status == 1 ||
+        checkFriendOfUser.status == 2 ||
+        checkFriendOfUser == 3
+      )
+        console.log("Hello");
+      userInFriendList.friendStatus.delete(friendId);
     }
     if (!checkUserOfFriend) {
       friendInFriendList.friendStatus.set(userId, 2);
-    } else if (checkUserOfFriend.status == 2 || checkUserOfFriend == 3) {
+    } else if (
+      checkUserOfFriend.status == 2 ||
+      checkUserOfFriend.status == 1 ||
+      checkUserOfFriend == 3
+    ) {
       friendInFriendList.friendStatus.delete(userId);
     }
     await FriendListStatus.findByIdAndUpdate(userInFriendList._id, {
