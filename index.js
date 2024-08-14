@@ -7,6 +7,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
+import Job from "./models/Job.js";
 
 // routes import
 import authRoutes from "./routes/auth.js";
@@ -15,6 +16,7 @@ import otpRoutes from "./routes/otp.js";
 import jobRoutes from "./routes/job.js";
 import postRoutes from "./routes/post.js";
 import adminRoutes from "./routes/admin.js";
+import fakeJobsData from "./FakeDatabase.js";
 
 // CONFIGURATIONS
 dotenv.config();
@@ -50,12 +52,14 @@ app.use("/job", jobRoutes);
 app.use("/post", postRoutes);
 app.use("/admin", adminRoutes);
 
+// console.log(process.env.MONGO_URL);
 const PORT = process.env.PORT || 5000;
 // MONGOOSE SETUP
 mongoose
   .connect(process.env.MONGO_URL, {})
   .then(() => {
     console.log(`Server Port: ${PORT}`);
+    // Job.insertMany(fakeJobsData);
   })
   .catch((error) => console.log(`${error} did not connect`));
 
