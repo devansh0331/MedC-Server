@@ -17,6 +17,8 @@ import jobRoutes from "./routes/job.js";
 import postRoutes from "./routes/post.js";
 import adminRoutes from "./routes/admin.js";
 import fakeJobsData from "./FakeDatabase.js";
+import Post from "./models/Post.js";
+import fakePostsData from "./FakePosts.js";
 
 // CONFIGURATIONS
 dotenv.config();
@@ -60,6 +62,7 @@ mongoose
   .then(() => {
     console.log(`Server Port: ${PORT}`);
     // Job.insertMany(fakeJobsData);
+    // Post.insertMany(fakePostsData);
   })
   .catch((error) => console.log(`${error} did not connect`));
 

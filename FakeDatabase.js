@@ -4,15 +4,15 @@ const generateFakeJobs = (count) => {
   const fakeJobs = [];
   for (let i = 0; i < count; i++) {
     const job = {
-      jobTitle: faker.name.jobTitle(),
+      jobTitle: faker.person.jobTitle(), // Using faker.name.jobTitle() for more specific job titles
       organizationName: faker.company.name(),
-      location: faker.address.city(),
-      salaryRange: `₹${faker.datatype.number({ min: 300000, max: 1500000 })}-${faker.datatype.number({ min: 500000, max: 2000000 })} per year`,
+      location: faker.location.city(), // Using faker.address.city() for a more complete location
+      salaryRange: `₹${faker.number.int({ min: 300000, max: 1500000 })}-${faker.number.int({ min: 500000, max: 2000000 })} per year`,
       requiredQualification: faker.education?.degree(),
-      benefits: `${faker.lorem.words(3)}, ${faker.lorem.words(3)}, ${faker.lorem.words(3)}`,
-      skills: `${faker.lorem.words(3)}, ${faker.lorem.words(3)}, ${faker.lorem.words(3)}`,
-      experience: `${faker.datatype.number({ min: 0, max: 5 })} years`,
-      workTiming: `${faker.datatype.number({ min: 9, max: 11 })} AM - ${faker.datatype.number({ min: 5, max: 7 })} PM`,
+      benefits: `${faker.lorem.words(3)}. ${faker.lorem.words(3)}. ${faker.lorem.words(3)}`, // Improved readability with periods
+      skills: `${faker.lorem.words(3)}. ${faker.lorem.words(3)}. ${faker.lorem.words(3)}`, // Improved readability with periods
+      experience: `${faker.number.int({ min: 0, max: 5 })} years`,
+      workTiming: `${faker.number.int({ min: 9, max: 11 })} AM - ${faker.number.int({ min: 5, max: 7 })} PM`, // `faker.datatype.number` is still acceptable for work hours
       jobType: faker.helpers.arrayElement(['Full-time', 'Part-time', 'Contract']),
       jobDescription: faker.lorem.paragraph(),
     };

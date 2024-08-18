@@ -22,6 +22,7 @@ export const createPost = async (req, res) => {
       fileURL,
       likes: new Map(),
       comments: [],
+      archived: false,
     });
     console.log(post);
     if (!post)
@@ -68,7 +69,7 @@ export const getAllPosts = async (req, res) => {
 
 export const getSinglePost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("user");
+    const post = await Post.findById({ _id: req.params.id, archived: false }).populate("user");
     if (!post)
       return res
         .status(400)
@@ -87,7 +88,7 @@ export const getSinglePost = async (req, res) => {
 export const deletePost = async (req, res) => {
   try {
     const postId = req.params.id;
-    const post = await Post.findByIdAndDelete({ _id: postId });
+    const post = await Post.findByIdAndUpdate(postId, { archived: true });
     if (!post)
       return res
         .status(400)
@@ -97,6 +98,7 @@ export const deletePost = async (req, res) => {
         .status(200)
         .json({ success: true, message: "Post deleted successfully" });
   } catch (error) {
+    console.log(error); 
     return res
       .status(500)
       .json({ success: false, error: "Failed to delete post!" });
@@ -178,5 +180,99 @@ export const deleteComment = async (req, res) => {
     res.status(200).json({ success: true, message: "Deleted Successfully!" });
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
+  }
+};
+
+// New Controllers
+
+export const getAllLivePosts = async (req, res) => {
+  try {
+    const userId = req.user;
+    const posts = await Post.find({ archived: false })
+      .sort({ createdAt: -1 })
+      .populate("user", "name profileURL bio");
+    if (!userId) {
+      return res.status(400).json({ success: false, error: "Access Denied!" });
+    }
+    if (!posts)
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to get posts" });
+    else {
+      console.log(posts.length);
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        data: posts,
+        userId: userId,
+      });
+    }
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ success: false, status: 400, error: "Failed to get posts" });
+  }
+}
+
+export const getAllArchivedPosts = async (req, res) => {
+  try {
+    const userId = req.user;
+    const posts = await Post.find({ archived: true })
+      .sort({ createdAt: -1 })
+      .populate("user", "name profileURL bio");
+    if (!userId) {
+      return res.status(400).json({ success: false, error: "Access Denied!" });
+    }
+    if (!posts)
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to get posts" });
+    else {
+      console.log(posts.length);
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        data: posts,
+        userId: userId,
+      });
+    }
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ success: false, status: 400, error: "Failed to get posts" });
+  }
+}
+
+export const getSingleUserPosts = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const posts = await Post.find({ user: userId, archived: false }).sort({ createdAt: -1 }).populate("user");
+    if (!posts)
+      return res
+        .status(400)
+        .json({ success: false, error: "No posts available!" });
+    else
+      return res.status(200).json({ success: true, data: posts });
+  } catch (err) {
+    res.status(404).json({ success: false, error: err.message });
+  }
+};
+
+export const updatePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findByIdAndUpdate(postId, req.body);
+    if (!post)
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to update post!" });
+    else
+      return res
+        .status(200)
+        .json({ success: true, message: "Post updated successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to update post!" });
   }
 };

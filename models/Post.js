@@ -9,7 +9,7 @@ const PostSchema = new mongoose.Schema(
     audience: String,
     description: String,
     fileURL: String,
-
+    archived: Boolean,
     likes: {
       type: Map,
       of: Boolean,
