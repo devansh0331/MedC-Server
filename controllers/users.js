@@ -1,3 +1,7 @@
+import Achievement from "../models/Achievement.js";
+import Certificate from "../models/Certificate.js";
+import Education from "../models/Education.js";
+import Experience from "../models/Experience.js";
 import FriendListStatus from "../models/FriendStatus.js";
 import User from "../models/User.js";
 
@@ -268,5 +272,42 @@ export const getConnections = async (req, res) => {
     }
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
+  }
+};
+
+export const getUserExperience = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const experience = await Experience.find({ userId: id });
+    res.status(200).json({ success: true, data: experience });
+  } catch (err) {
+    res.status(404).json({ success: false, message: err.message });
+  }
+};
+export const getUserEducation = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const education = await Education.find({ userId: id });
+    res.status(200).json({ success: true, data: education });
+  } catch (err) {
+    res.status(404).json({ success: false, message: err.message });
+  }
+};
+export const getUserAchievement = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const achievement = await Achievement.find({ userId: id });
+    res.status(200).json({ success: true, data: achievement });
+  } catch (err) {
+    res.status(404).json({ success: false, message: err.message });
+  }
+};
+export const getUserCertificate = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const certificate = await Certificate.find({ userId: id });
+    res.status(200).json({ success: true, data: certificate });
+  } catch (err) {
+    res.status(404).json({ success: false, message: err.message });
   }
 };

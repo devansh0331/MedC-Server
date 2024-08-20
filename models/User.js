@@ -26,6 +26,7 @@ const UserSchema = new mongoose.Schema({
   twitter: String,
   website: String,
   location: String,
+  resume: String,
 
   friendList: {
     type: mongoose.Schema.ObjectId,

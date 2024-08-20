@@ -567,3 +567,31 @@ export const deleteEducation = async (req, res) => {
       .json({ success: false, error: "Failed to delete education" });
   }
 };
+
+export const uploadResume = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    if (req.file && req.file.path) {
+      console.log(req.file.path);
+      const resumeFile = req.file.path;
+      const result = await cloudinary.uploader.upload(profile);
+      let resumeURL = result.secure_url;
+      await User.findByIdAndUpdate(id, { resume: resumeURL }, { new: true });
+      return res.status(200).json({
+        success: true,
+        data: resume,
+        message: "Resume Uploaded Successfully",
+      });
+    } else {
+      return res
+        .status(400)
+        .json({ success: false, error: "Resume Uploaded Successfully" });
+    }
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      error: `Failed to upload resume: ${err.message}`,
+    });
+  }
+};

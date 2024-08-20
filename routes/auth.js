@@ -25,6 +25,7 @@ import {
   getUserCertificate,
   getUserEducation,
   signInWithGoogle,
+  uploadResume,
 } from "../controllers/auth.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import upload from "../middleware/upload.js";
@@ -45,7 +46,18 @@ router.get("/is-user", verifyToken, async (req, res) => {
 router.get("/logout", logout);
 
 router.post("/reset-password", resetPassword);
-router.post("/update-profile/about", verifyToken, updateAbout);
+router.post(
+  "/upload/resume",
+  verifyToken,
+  upload.single("filepath"),
+  uploadResume
+);
+router.post(
+  "/update-profile/about",
+  verifyToken,
+
+  updateAbout
+);
 router.post(
   "/update-profile/social-info-no-profile",
   verifyToken,
