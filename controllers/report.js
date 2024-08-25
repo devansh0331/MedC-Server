@@ -1,4 +1,5 @@
 import ReportProfile from "../models/ReportProfile.js";
+import User from "../models/User.js";
 
 export const reportProfile = async (req, res) => {
   try {
@@ -45,7 +46,11 @@ export const reportProfile = async (req, res) => {
 
 export const getReportedProfiles = async (req, res) => {
   try {
-    const profiles = await ReportProfile.find();
+    const profiles = await ReportProfile.find().populate(
+      "userId",
+      "name profileURL bio"
+    );
+
     if (profiles.length > 0) {
       res.status(200).json({ success: true, data: profiles });
     } else {
@@ -56,6 +61,56 @@ export const getReportedProfiles = async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
+};
+
+export const getSingleReportedProfile = async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    const profile = await ReportProfile.findById(id);
+    if (!profile) {
+      res.status(400).json("Profile not found!");
+    } else {
+      const reports = profile.reportedBy; // Assuming this is an object with a map method
+      const data = [];
+      for (let [userId, reason] of Object.entries(reports)) {
+        console.log(reason);
+      }
+      return res.status(200).json({ success: true, data: data });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+export const getSingleReportedProfileReasons = async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log("Hello");
+    const profile = await ReportProfile.findById(id);
+    if (!profile) {
+      res.status(400).json({ success: false, error: "Profile not found!" });
+    } else {
+      const reports = profile.reportedBy; // Assuming this is an object with a map method
+      console.log(reports);
+      const dataMap = new Map();
+      const data = [];
+      reports.forEach(async (reason, user) => {
+        if (!dataMap.get(reason)) {
+          dataMap.set(reason, 1);
+        } else {
+          dataMap.set(reason, data.get(reason) + 1);
+        }
+      });
+      console.log("1");
+      dataMap.forEach((values, keys) => {
+        data.push({ reason: keys, count: values });
+      });
+      console.log("2");
+      console.log(data);
+      res.status(200).json({ success: true, data: data });
+    }
+  } catch (error) {}
 };
 
 export const deleteReport = async (req, res) => {
