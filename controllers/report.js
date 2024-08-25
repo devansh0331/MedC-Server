@@ -99,7 +99,7 @@ export const getSingleReportedProfileReasons = async (req, res) => {
         if (!dataMap.get(reason)) {
           dataMap.set(reason, 1);
         } else {
-          dataMap.set(reason, data.get(reason) + 1);
+          dataMap.set(reason, dataMap.get(reason) + 1);
         }
       });
       console.log("1");
