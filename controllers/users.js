@@ -46,7 +46,7 @@ export const sendRequest = async (req, res) => {
   try {
     const userId = req.user.id; //"66593e0052fcb6e5f19afdff";
     const friendId = req.params.id; //"66502d9022d3c10ef958c02a";
-    console.log(req.user.id, req.params.id);
+    // console.log(req.user.id, req.params.id);
     let userInFriendList = await FriendListStatus.findOne({ userId });
     let friendInFriendList = await FriendListStatus.findOne({
       userId: friendId,
