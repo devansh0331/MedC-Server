@@ -26,6 +26,7 @@ import {
   getUserEducation,
   signInWithGoogle,
   uploadResume,
+  deactivateAccount,
 } from "../controllers/auth.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import upload from "../middleware/upload.js";
@@ -71,6 +72,7 @@ router.post(
   updateSocialInfo
 );
 router.get("/profile", verifyToken, getUser);
+router.post("/deactivate-account", verifyToken, deactivateAccount);
 
 router.get("/update-profile/get/achievement", verifyToken, getUserAchievement);
 router.get("/update-profile/get/experience", verifyToken, getUserExperience);

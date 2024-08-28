@@ -595,3 +595,34 @@ export const uploadResume = async (req, res) => {
     });
   }
 };
+
+export const deactivateAccount = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, error: "User does not exists!" });
+    } else {
+      if (!user.isUserDeactivated || user.isUserDeactivated == false) {
+        await User.findByIdAndUpdate(
+          id,
+          { isUserDeactivated: true },
+          { new: true }
+        );
+        return res.status(200).json({
+          success: true,
+          message: "Account Deactivated Successfully!",
+        });
+      } else {
+        await User.findByIdAndUpdate(id, { isUserDeactivated: false });
+        return res
+          .status(400)
+          .json({ success: false, error: "Account Activated Successfully!" });
+      }
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};

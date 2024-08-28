@@ -18,10 +18,15 @@ export const getSingleUser = async (req, res) => {
     }).populate("experience");
     if (!user)
       res.status(400).json({ success: false, error: "User not found" });
-    console.log("Single User: " + user.experience);
-    res
-      .status(200)
-      .json({ success: true, user: user, isExisting: userId == id });
+    else {
+      if (
+        (!user.isDeactivated || user.isDeactivated == false) &&
+        (!user.isUserDeactivated || user.isUserDeactivated == false)
+      )
+        return res
+          .status(200)
+          .json({ success: true, user: user, isExisting: userId == id });
+    }
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
   }
@@ -32,9 +37,18 @@ export const getAllUser = async (req, res) => {
     const user = req.user.id;
     if (!user) res.status(400).json({ success: false, error: "Access Denied" });
     const users = await User.find(
-      {},
+      {
+        $or: [
+          { isDeactivated: { $exists: false } },
+          { isDeactivated: { $ne: true } },
+        ],
+        $or: [
+          { isUserDeactivated: { $exists: false } },
+          { isUserDeactivated: { $ne: true } },
+        ],
+      },
       { name: 1, _id: 1, location: 1, bio: 1, profileURL: 1 }
-    ).limit(15);
+    );
 
     res.status(200).json({ success: true, data: users });
   } catch (err) {
