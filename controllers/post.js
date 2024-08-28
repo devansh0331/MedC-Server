@@ -23,6 +23,7 @@ export const createPost = async (req, res) => {
       likes: new Map(),
       comments: [],
       archived: false,
+      userArchived: false,
     });
     console.log(post);
     if (!post)
@@ -69,7 +70,11 @@ export const getAllPosts = async (req, res) => {
 
 export const getSinglePost = async (req, res) => {
   try {
-    const post = await Post.findById({ _id: req.params.id, archived: false }).populate("user");
+    const post = await Post.findById({
+      _id: req.params.id,
+      archived: false,
+      userArchived: false,
+    }).populate("user");
     if (!post)
       return res
         .status(400)
@@ -85,7 +90,7 @@ export const getSinglePost = async (req, res) => {
   }
 };
 
-export const deletePost = async (req, res) => {
+export const deletePostByAdmin = async (req, res) => {
   try {
     const postId = req.params.id;
     const post = await Post.findByIdAndUpdate(postId, { archived: true });
@@ -98,7 +103,7 @@ export const deletePost = async (req, res) => {
         .status(200)
         .json({ success: true, message: "Post deleted successfully" });
   } catch (error) {
-    console.log(error); 
+    console.log(error);
     return res
       .status(500)
       .json({ success: false, error: "Failed to delete post!" });
@@ -212,7 +217,7 @@ export const getAllLivePosts = async (req, res) => {
       .status(400)
       .json({ success: false, status: 400, error: "Failed to get posts" });
   }
-}
+};
 
 export const getAllArchivedPosts = async (req, res) => {
   try {
@@ -241,18 +246,19 @@ export const getAllArchivedPosts = async (req, res) => {
       .status(400)
       .json({ success: false, status: 400, error: "Failed to get posts" });
   }
-}
+};
 
 export const getSingleUserPosts = async (req, res) => {
   try {
     const userId = req.params.id;
-    const posts = await Post.find({ user: userId, archived: false }).sort({ createdAt: -1 }).populate("user");
+    const posts = await Post.find({ user: userId, archived: false })
+      .sort({ createdAt: -1 })
+      .populate("user");
     if (!posts)
       return res
         .status(400)
         .json({ success: false, error: "No posts available!" });
-    else
-      return res.status(200).json({ success: true, data: posts });
+    else return res.status(200).json({ success: true, data: posts });
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
   }
@@ -274,5 +280,93 @@ export const updatePost = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, error: "Failed to update post!" });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findByIdAndDelete(postId);
+    if (!post)
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to delete post!" });
+    else
+      return res
+        .status(200)
+        .json({ success: true, message: "Post deleted successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to delete post!" });
+  }
+};
+
+export const archivePostbyUser = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findByIdAndUpdate(postId, { archived: true, userArchived: true });
+    console.log(post);
+    
+    if (!post)
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to archive post!" });
+    else
+      return res
+        .status(200)
+        .json({ success: true, message: "Post archived successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to archive post!" });
+  }
+};
+
+export const restorePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findByIdAndUpdate(postId, { archived: false, userArchived: false });
+    if (!post)
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to restore post!" });
+    else
+      return res
+        .status(200)
+        .json({ success: true, message: "Post restored successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to restore post!" });
+  }
+};
+
+export const userArchivedPost = async (req, res) => {
+  try {
+    const userId = req.user;
+    const posts = await Post.find({ userArchived: true })
+      .sort({ createdAt: -1 })
+      .populate("user", "name profileURL bio");
+    if (!userId) {
+      return res.status(400).json({ success: false, error: "Access Denied!" });
+    }
+    if (!posts)
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to get posts" });
+    else {
+      console.log(posts.length);
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        data: posts,
+        userId: userId,
+      });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to get archived post!" });
   }
 };

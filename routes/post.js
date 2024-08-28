@@ -1,9 +1,11 @@
 import express from "express";
 import {
   addComment,
+  archivePostbyUser,
   createPost,
   deleteComment,
   deletePost,
+  deletePostByAdmin,
   getAllArchivedPosts,
   getAllLivePosts,
   getAllPosts,
@@ -11,7 +13,9 @@ import {
   getSinglePost,
   getSingleUserPosts,
   likePost,
+  restorePost,
   updatePost,
+  userArchivedPost,
 } from "../controllers/post.js";
 import upload from "../middleware/upload.js";
 import { verifyToken } from "../middleware/verifyToken.js";
@@ -31,6 +35,10 @@ router.get("/get-live-posts", verifyToken, getAllLivePosts);
 router.get("/get-archived-posts", verifyToken, getAllArchivedPosts);
 router.get("/get-user-posts/:id", verifyToken, getSingleUserPosts);
 router.post("/update-post/:id", verifyToken, updatePost);
-router.post("/delete-post/:id", verifyToken, deletePost);
+router.post("/archive-post/:id", verifyToken, deletePostByAdmin);
+router.post("/delete-post/:id", verifyToken, deletePost)
+router.post("/archive-post-by-user/:id", verifyToken, archivePostbyUser);
+router.post("/restore-post-by-user/:id", verifyToken, restorePost);
+router.post("/get-user-archived-posts", verifyToken, userArchivedPost);
 
 export default router;
