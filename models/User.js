@@ -27,7 +27,8 @@ const UserSchema = new mongoose.Schema({
   website: String,
   location: String,
   resume: String,
-
+  isUserDeactivated: Boolean,
+  isDeactivated: Boolean,
   friendList: {
     type: mongoose.Schema.ObjectId,
     ref: "FriendListStatus",
