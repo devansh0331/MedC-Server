@@ -39,6 +39,6 @@ router.post("/archive-post/:id", verifyToken, deletePostByAdmin);
 router.post("/delete-post/:id", verifyToken, deletePost)
 router.post("/archive-post-by-user/:id", verifyToken, archivePostbyUser);
 router.post("/restore-post-by-user/:id", verifyToken, restorePost);
-router.post("/get-user-archived-posts", verifyToken, userArchivedPost);
+router.get("/get-user-archived-posts/:id", verifyToken, userArchivedPost);
 
 export default router;

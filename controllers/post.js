@@ -344,8 +344,9 @@ export const restorePost = async (req, res) => {
 
 export const userArchivedPost = async (req, res) => {
   try {
-    const userId = req.user;
-    const posts = await Post.find({ userArchived: true })
+    const userId = req.params.id;
+    
+    const posts = await Post.find({user: userId, userArchived: true })
       .sort({ createdAt: -1 })
       .populate("user", "name profileURL bio");
     if (!userId) {
@@ -356,7 +357,7 @@ export const userArchivedPost = async (req, res) => {
         .status(400)
         .json({ success: false, error: "Failed to get posts" });
     else {
-      console.log(posts.length);
+      // console.log(posts.length);
       return res.status(200).json({
         success: true,
         status: 200,
@@ -370,3 +371,4 @@ export const userArchivedPost = async (req, res) => {
       .json({ success: false, error: "Failed to get archived post!" });
   }
 };
+
