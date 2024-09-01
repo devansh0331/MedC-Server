@@ -40,6 +40,7 @@ app.use(
     credentials: true,
     origin: [
       process.env.CLIENT_URL,
+      process.env.PRODUCTION_URL,
       "http://localhost:5173",
       "http://localhost:5174",
     ],
