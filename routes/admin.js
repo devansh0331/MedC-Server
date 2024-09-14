@@ -7,12 +7,14 @@ import {
   deactivateAccount,
   deactivatedAccounts,
   getAllPosts,
+  isAdmin,
 } from "../controllers/admin.js";
 
 const router = express.Router();
 
-// router.use(verifyToken, verifyAdmin);
+router.use(verifyToken, verifyAdmin);
 
+router.get("/is-admin", isAdmin);
 router.get("/post/view/all", getAllPosts);
 router.post("/post/delete/:id", deletePost);
 router.post("/add/:id", addAdmin);

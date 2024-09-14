@@ -134,6 +134,20 @@ export const login = async (req, res) => {
   }
 };
 
+// DELETE ACCOUNT
+export const deleteAccount = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    if(!id) return res.status(400).json({ success: false, error: "User does not exist." });
+    await User.deleteOne({ _id: id });
+    return res.status(200).json({ success: true, message: "Account Deleted Successfully" });
+    
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+}
+
 // RESET PASSWORD
 export const resetPassword = async (req, res) => {
   try {

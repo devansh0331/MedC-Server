@@ -2,9 +2,26 @@ import Admin from "../models/Admin.js";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 
+export const isAdmin = async(req,res) => {
+  try {
+    const id = req.admin;
+    console.log("Admin" + id);
+    
+    if(id == null || id == undefined){
+      return res.status(400).json({success: false, error: "User is not admin!"});
+    }
+    else{
+      return res.status(200).json({success: true, message: "User is admin!"});
+
+    }
+  } catch (error) {
+    return res.status(500).json({success: false, error: error.message});
+  }
+}
+
 export const addAdmin = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const  userId  = req.params.id;
     const admin = await Admin.findOne({ userId });
 
     if (!admin) {
