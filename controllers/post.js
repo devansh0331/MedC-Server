@@ -82,7 +82,7 @@ export const getSinglePost = async (req, res) => {
     else
       return res
         .status(200)
-        .json({ success: true, data: post, userId: req.user.id });
+        .json({ success: true, data: post, userId: post.user.id });
   } catch (error) {
     return res
       .status(400)
@@ -192,13 +192,13 @@ export const deleteComment = async (req, res) => {
 
 export const getAllLivePosts = async (req, res) => {
   try {
-    const userId = req.user;
+    // const userId = req.user;
     const posts = await Post.find({ archived: false })
       .sort({ createdAt: -1 })
       .populate("user", "name profileURL bio");
-    if (!userId) {
-      return res.status(400).json({ success: false, error: "Access Denied!" });
-    }
+    // if (!userId) {
+    //   return res.status(400).json({ success: false, error: "Access Denied!" });
+    // }
     if (!posts)
       return res
         .status(400)
@@ -209,7 +209,7 @@ export const getAllLivePosts = async (req, res) => {
         success: true,
         status: 200,
         data: posts,
-        userId: userId,
+        // userId: userId,
       });
     }
   } catch (error) {

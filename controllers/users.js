@@ -9,9 +9,9 @@ import User from "../models/User.js";
 export const getSingleUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log("User Id: ", userId);
+    // console.log("User Id: ", userId);
     const id = req.user.id;
-    console.log("Id: ", id);
+    // console.log("Id: ", id);
     const user = await User.findById(userId, {
       password: 0,
       isGoogleSignIn: 0,
@@ -34,8 +34,8 @@ export const getSingleUser = async (req, res) => {
 /* READ */
 export const getAllUser = async (req, res) => {
   try {
-    const user = req.user.id;
-    if (!user) res.status(400).json({ success: false, error: "Access Denied" });
+    // const user = req.user.id;
+    // if (!user) res.status(400).json({ success: false, error: "Access Denied" });
     const users = await User.find(
       {
         $or: [
@@ -105,7 +105,7 @@ export const sendRequest = async (req, res) => {
         checkFriendOfUser.status == 2 ||
         checkFriendOfUser == 3
       )
-        console.log("Hello");
+        // console.log("Hello");
       userInFriendList.friendStatus.delete(friendId);
     }
     if (!checkUserOfFriend) {
@@ -168,13 +168,13 @@ export const checkFriendStatus = async (req, res) => {
     const userId = req.user.id;
     const friendId = req.params.id;
 
-    console.log("friend id: ", friendId);
+    // console.log("friend id: ", friendId);
 
     const userInFriendList = await FriendListStatus.findOne({
       userId,
     });
 
-    console.log(userInFriendList);
+    // console.log(userInFriendList);
     if (!userInFriendList) {
       return res.status(200).json({ success: true, data: 0 });
     } else {
@@ -205,7 +205,7 @@ export const getReceivedRequests = async (req, res) => {
       userInFriendList.friendStatus.forEach((element, value) => {
         if (element === 2) {
           arr.push({ _id: value });
-          console.log(arr);
+          // console.log(arr);
         }
       });
       if (arr.length > 0) {
@@ -238,7 +238,7 @@ export const getSentRequests = async (req, res) => {
       userInFriendList.friendStatus.forEach((element, value) => {
         if (element === 1) {
           arr.push({ _id: value });
-          console.log(arr);
+          // console.log(arr);
         }
       });
       if (arr.length > 0) {
@@ -257,9 +257,9 @@ export const getSentRequests = async (req, res) => {
 export const getConnections = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log(userId);
+    // console.log(userId);
     const singleUser = await User.findById(userId);
-    console.log(singleUser);
+    // console.log(singleUser);
     const userInFriendList = await FriendListStatus.findOne({
       userId,
     });
@@ -272,7 +272,7 @@ export const getConnections = async (req, res) => {
       userInFriendList.friendStatus.forEach((element, value) => {
         if (element === 3) {
           arr.push({ _id: value });
-          console.log(arr);
+          // console.log(arr);
         }
       });
       if (arr.length > 0) {

@@ -17,7 +17,7 @@ import {
 
 const router = express.Router();
 
-router.get("/all-user", verifyToken, getAllUser);
+router.get("/all-user", getAllUser);
 router.get("/single-user/:id", verifyToken, getSingleUser);
 router.post("/send-request/:id", verifyToken, sendRequest);
 router.post("/accept-request/:id", verifyToken, acceptRequest);
