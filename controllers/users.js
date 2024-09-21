@@ -9,9 +9,9 @@ import User from "../models/User.js";
 export const getSingleUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    // console.log("User Id: ", userId);
+    console.log("User Id: ", userId);
     const id = req.user.id;
-    // console.log("Id: ", id);
+    console.log("Id: ", id);
     const user = await User.findById(userId, {
       password: 0,
       isGoogleSignIn: 0,
