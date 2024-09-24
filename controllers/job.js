@@ -50,13 +50,13 @@ export const createJob = async (req, res) => {
 
 export const getAllJobs = async (req, res) => {
   try {
-    const jobs = await Job.find().populate("user");
+    const jobs = await Job.find().populate("user").sort({ createdAt: -1 });
 
     if (!jobs)
       return res
         .status(400)
         .json({ success: false, error: "No jobs available!" });
-    else return res.status(200).json({ success: true, jobs });
+    else return res.status(200).json({ success: true, jobs: jobs });
   } catch (error) {
     return res
       .status(400)
@@ -70,7 +70,7 @@ export const getSingleJob = async (req, res) => {
     const job = await Job.findById(_id).populate("user");
     if (!job)
       return res.status(400).json({ success: false, error: "No job found!" });
-    else return res.status(200).json({ success: true, job });
+    else return res.status(200).json({ success: true, job: job });
   } catch (error) {
     return res.status(400).json({ success: false, error: "No job found!" });
   }

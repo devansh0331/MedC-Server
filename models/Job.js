@@ -10,13 +10,16 @@ const JobSchema = new mongoose.Schema({
   organziationName: String,
   location: String,
   salaryRange: String,
-  requiredQualification: String,
-  benefits: String,
-  skills: String,
   experience: String,
+  requiredQualification: String,
+  skills: String,
   workTiming: String,
   jobType: String,
-  jobDescription: String,
+  jobDescription: String, 
+  lastDateToApply: Date,
+  archived: Boolean,
+  userArchived: Boolean,
+  noOfApplications: Number,
 });
 
 const Job = mongoose.model("Job", JobSchema);
