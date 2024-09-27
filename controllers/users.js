@@ -47,7 +47,7 @@ export const getAllUser = async (req, res) => {
           { isUserDeactivated: { $ne: true } },
         ],
       },
-      { name: 1, _id: 1, location: 1, bio: 1, profileURL: 1 }
+      { name: 1, _id: 1, location: 1, bio: 1, profileURL: 1, about: 1, email: 1 }
     );
 
     res.status(200).json({ success: true, data: users });
