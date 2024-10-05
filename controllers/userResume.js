@@ -12,10 +12,15 @@ export const addResume = async (req, res) => {
       fileURL = result.secure_url;
     }
 
-    const newResume = await UserResume.create({
+    const newResume = await UserResume({
       user,
       resume: fileURL,
     });
+
+    await newResume.save();
+    res
+      .status(200)
+      .json({ success: true, message: "Resume Uploaded Successfully" });
   } catch (error) {
     return res.status(400).json({
       success: false,
