@@ -114,11 +114,13 @@ export const getPostedJobs = async (req, res) => {
 // APPLY JOB WITHOUT RESUME
 export const applyJob = async (req, res) => {
   try {
-    const { userId, jobId } = req.body;
+    const { userId, jobId, userResumeId } = req.body;
+
     const newJobApply = await UserJob.create({
       userId,
       jobId,
       activity: "apply",
+      resume: userResumeId != undefined ? userResumeId : null,
     });
 
     if (newJobApply) {
@@ -140,8 +142,6 @@ export const applyJob = async (req, res) => {
     });
   }
 };
-
-// APPLY JOB WITH RESUME
 
 // RETRIEVE JOB APPLICATION
 export const deleteJobApplication = async (req, res) => {
