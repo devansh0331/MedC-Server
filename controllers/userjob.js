@@ -4,7 +4,8 @@ import UserJob from "../models/UserJob.js";
 export const saveJob = async (req, res) => {
   try {
     const { userId, jobId } = req.body;
-
+    console.log(userId, jobId);
+    
     const newSave = await UserJob.create({
       userId,
       jobId,
