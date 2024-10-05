@@ -14,7 +14,7 @@ export const addResume = async (req, res) => {
 
     const newResume = await UserResume({
       user,
-      resume: fileURL,
+      resumeURL: fileURL,
     });
 
     await newResume.save();

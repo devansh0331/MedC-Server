@@ -5,7 +5,7 @@ const UserResumeSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
-  resume: {
+  resumeURL: {
     type: String,
     default: null,
   },
