@@ -1,4 +1,5 @@
 import Job from "../models/Job.js";
+import UserJob from "../models/UserJob.js";
 
 export const createJob = async (req, res) => {
   try {
@@ -37,9 +38,21 @@ export const createJob = async (req, res) => {
         .status(400)
         .json({ success: false, error: "Job creation failed" });
     } else {
-      return res
-        .status(200)
-        .json({ success: true, message: "Job created successfully" });
+      const userJob = await UserJob.create({
+        userId: user,
+        jobId: newJob._id,
+        activity: "post",
+      });
+
+      if (!userJob) {
+        return res
+          .status(400)
+          .json({ success: false, error: "Job creation failed" });
+      } else {
+        return res
+          .status(200)
+          .json({ success: true, message: "Job created successfully" });
+      }
     }
   } catch (error) {
     return res
@@ -78,11 +91,23 @@ export const getSingleJob = async (req, res) => {
 
 export const deleteJob = async (req, res) => {
   try {
-    const _id = req.params.id;
+    const { userId, jobId } = req.body;
+    const _id = jobId;
     const job = await Job.findByIdAndDelete(_id);
-    if (!job)
+    if (!job) {
       return res.status(400).json({ success: false, error: "No job found!" });
-    else return res.status(200).json({ success: true, job });
+    } else {
+      const userJob = await UserJob.findOneAndDelete({
+        userId,
+        jobId,
+        activity: "post",
+      });
+      if (!userJob) {
+        return res.status(400).json({ success: false, error: "No job found!" });
+      } else {
+        return res.status(200).json({ success: true, job });
+      }
+    }
   } catch (error) {
     return res.status(400).json({ success: false, error: "No job found!" });
   }
