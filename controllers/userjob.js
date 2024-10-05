@@ -113,21 +113,13 @@ export const getPostedJobs = async (req, res) => {
 // APPLY JOB WITHOUT RESUME
 export const applyJob = async (req, res) => {
   try {
-    const { userId, jobId } = req.body;
-
-    // Apply job with resume
-    if (req.file && req.file.path) {
-      console.log(req.file.path);
-      const file = req.file.path;
-      const result = await cloudinary.uploader.upload(file);
-      fileURL = result.secure_url;
-    }
+    const { userId, jobId, userResumeId } = req.body;
 
     const newJobApply = await UserJob.create({
       userId,
       jobId,
       activity: "apply",
-      resume: fileURL ? fileURL : null,
+      resume: userResumeId != undefined ? userResumeId : null,
     });
 
     if (newJobApply) {

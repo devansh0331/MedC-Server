@@ -10,6 +10,7 @@ import {
   saveJob,
   unsaveJob,
 } from "../controllers/userjob.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
