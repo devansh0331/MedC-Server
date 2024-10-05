@@ -114,10 +114,20 @@ export const getPostedJobs = async (req, res) => {
 export const applyJob = async (req, res) => {
   try {
     const { userId, jobId } = req.body;
+
+    // Apply job with resume
+    if (req.file && req.file.path) {
+      console.log(req.file.path);
+      const file = req.file.path;
+      const result = await cloudinary.uploader.upload(file);
+      fileURL = result.secure_url;
+    }
+
     const newJobApply = await UserJob.create({
       userId,
       jobId,
       activity: "apply",
+      resume: fileURL ? fileURL : null,
     });
 
     if (newJobApply) {
@@ -139,8 +149,6 @@ export const applyJob = async (req, res) => {
     });
   }
 };
-
-// APPLY JOB WITH RESUME
 
 // RETRIEVE JOB APPLICATION
 export const deleteJobApplication = async (req, res) => {
