@@ -8,6 +8,10 @@ const CertificateSchema = new mongoose.Schema({
   certificate: String,
   issuer: String,
   description: String,
+  certificateURL: {
+    type: String,
+    default: null,
+  },
 });
 
 const Certificate = mongoose.model("Certificate", CertificateSchema);

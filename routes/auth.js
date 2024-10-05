@@ -46,7 +46,7 @@ router.get("/is-user", verifyToken, async (req, res) => {
   }
 });
 router.get("/logout", logout);
-router.post("/delete",verifyToken, deleteAccount);
+router.post("/delete", verifyToken, deleteAccount);
 
 router.post("/reset-password", resetPassword);
 router.post(
@@ -83,7 +83,18 @@ router.get("/update-profile/get/education", verifyToken, getUserEducation);
 
 router.post("/update-profile/add/achievement", verifyToken, addAchievement);
 router.post("/update-profile/add/experience", verifyToken, addExperience);
-router.post("/update-profile/add/certificate", verifyToken, addCertificate);
+router.post(
+  "/update-profile/add/certificate",
+  verifyToken,
+  upload.none(),
+  addCertificate
+);
+router.post(
+  "/update-profile/add/certificate-with-file",
+  verifyToken,
+  upload.single("filepath"),
+  addCertificate
+);
 router.post("/update-profile/add/education", verifyToken, addEducation);
 
 router.post("/update-profile/edit/achievement/:id", updateAchievement);

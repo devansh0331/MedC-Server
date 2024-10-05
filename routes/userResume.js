@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.post("/add-resume", verifyToken, upload.single(), addResume);
+router.post("/add-resume", verifyToken, upload.single("filepath"), addResume);
 router.post("/get-resume", verifyToken, getResume);
 router.post("/remove-resume/:id", verifyToken, removeResume);
 

@@ -139,14 +139,18 @@ export const deleteAccount = async (req, res) => {
   try {
     const id = req.user.id;
 
-    if(!id) return res.status(400).json({ success: false, error: "User does not exist." });
+    if (!id)
+      return res
+        .status(400)
+        .json({ success: false, error: "User does not exist." });
     await User.deleteOne({ _id: id });
-    return res.status(200).json({ success: true, message: "Account Deleted Successfully" });
-    
+    return res
+      .status(200)
+      .json({ success: true, message: "Account Deleted Successfully" });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }
-}
+};
 
 // RESET PASSWORD
 export const resetPassword = async (req, res) => {
@@ -444,11 +448,20 @@ export const addCertificate = async (req, res) => {
     const userId = req.user.id;
     const { certificate, issuer, description } = req.body;
 
+    // uploading certificate
+    if (req.file && req.file.path) {
+      console.log(req.file.path);
+      const file = req.file.path;
+      const result = await cloudinary.uploader.upload(file);
+      fileURL = result.secure_url;
+    }
+
     const newCertificate = await Certificate.create({
       userId,
       certificate,
       issuer,
       description,
+      certificateURL: fileURL != undefined ? fileURL : null,
     });
 
     if (!newCertificate)
