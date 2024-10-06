@@ -8,7 +8,7 @@ export const createPost = async (req, res) => {
     const user = req.user.id;
     console.log(audience, description, user);
     let fileURL = "";
-    console.log("Hello " + fileURL);
+    // console.log("Hello " + fileURL);
     if (req.file && req.file.path) {
       console.log(req.file.path);
       const file = req.file.path;

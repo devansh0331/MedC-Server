@@ -4,8 +4,16 @@ import UserJob from "../models/UserJob.js";
 export const saveJob = async (req, res) => {
   try {
     const { userId, jobId } = req.body;
-    console.log(userId, jobId);
-    
+
+    // Check if the job is already saved by the user
+    const existingSave = await UserJob.findOne({ userId, jobId });
+    if (existingSave) {
+      return res.status(400).json({
+        success: false,
+        error: "Job is already saved",
+      });
+    }
+
     const newSave = await UserJob.create({
       userId,
       jobId,
@@ -17,8 +25,7 @@ export const saveJob = async (req, res) => {
         success: true,
         message: "Job saved successfully",
       });
-    }
-    if (!newSave) {
+    } else {
       res.status(400).json({
         success: false,
         error: "Failed to save job",
@@ -61,11 +68,40 @@ export const unsaveJob = async (req, res) => {
   }
 };
 
+// CHECK IF JOB IS SAVED
+export const checkIfSaved = async (req, res) => {
+  try {
+    const { userId, jobId } = req.body;
+    const isSaved = await UserJob.findOne({ userId, jobId, activity: "save" });
+    if (!isSaved) {
+      res.status(200).json({
+        success: true,
+        isSaved: false,
+      });
+    }
+    if (isSaved) {
+      res.status(200).json({
+        success: true,
+        isSaved: true,
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: "Failed to check if job is saved",
+    });
+  }
+};
+
 // GET ALL SAVED JOBS BY USER
 export const getSavedJobs = async (req, res) => {
   try {
     const userId = req.params.id;
-    const savedJobs = await UserJob.find({ userId, activity: "save" });
+    console.log(userId);
+    
+    const savedJobs = await UserJob.find({ userId, activity: "save" }).populate("jobId").populate("userId");
+    console.log(savedJobs);
+    
     if (!savedJobs) {
       res.status(400).json({
         success: false,
