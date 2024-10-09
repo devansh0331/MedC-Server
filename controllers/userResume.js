@@ -1,23 +1,26 @@
 import UserResume from "../models/UserResume.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const addResume = async (req, res) => {
   try {
     const user = req.user.id;
-
+    var fileURL = null;
     // uploading resume
     if (req.file && req.file.path) {
       console.log(req.file.path);
       const file = req.file.path;
+
       const result = await cloudinary.uploader.upload(file);
       fileURL = result.secure_url;
     }
 
-    const newResume = await UserResume({
-      user,
+    console.log("fileURL", fileURL);
+    await UserResume.create({
+      userId: user,
       resumeURL: fileURL,
     });
 
-    await newResume.save();
+    // await newResume.save();
     res
       .status(200)
       .json({ success: true, message: "Resume Uploaded Successfully" });
@@ -32,8 +35,12 @@ export const addResume = async (req, res) => {
 export const getResume = async (req, res) => {
   try {
     const user = req.user.id;
-    const resume = await UserResume.find(user);
-    if (!resume || resume.length == 0) {
+    console.log(user);
+    
+    const resume = await UserResume.find({userId: user});
+    console.log(resume);
+    
+    if (!resume) {
       return res.status(404).json({
         success: false,
         error: "Resume not found",
@@ -63,3 +70,18 @@ export const removeResume = async (req, res) => {
     });
   }
 };
+
+export const getAllResume = async (req, res) => {
+  try {
+    const resumes = await UserResume.find();
+    return res.status(200).json({
+      success: true,
+      data: resumes,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: "Failed to get resumes",
+    });
+  }
+}
