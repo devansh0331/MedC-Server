@@ -9,6 +9,10 @@ const UserResumeSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  resumeName: {
+    type: String,
+    default: null,
+  },
 });
 
 const UserResume = mongoose.model("UserResume", UserResumeSchema);
