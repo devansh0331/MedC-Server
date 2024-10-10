@@ -20,7 +20,7 @@ router.post("/unsave-job", verifyToken, unsaveJob);
 router.post("/check-saved-job", verifyToken, checkIfSaved);
 router.get("/get-saved-jobs/:id", verifyToken, getSavedJobs);
 router.get("/get-posted-job/:id", verifyToken, getPostedJobs);
-router.post("/apply-job", verifyToken, upload.none(), applyJob);
+router.post("/apply-job", verifyToken, applyJob);
 router.post(
   "/apply-job-with-resume",
   verifyToken,
