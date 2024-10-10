@@ -6,7 +6,7 @@ export const saveJob = async (req, res) => {
     const { userId, jobId } = req.body;
 
     // Check if the job is already saved by the user
-    const existingSave = await UserJob.findOne({ userId, jobId });
+    const existingSave = await UserJob.findOne({ userId, jobId, activity: "save" });
     if (existingSave) {
       return res.status(400).json({
         success: false,
@@ -211,8 +211,8 @@ export const deleteJobApplication = async (req, res) => {
 // GET ALL APPLIED JOBS BY USER
 export const getAppliedJobs = async (req, res) => {
   try {
-    const userId = req.body.id;
-    const appliedJobs = await UserJob.find({ userId, activity: "apply" });
+    const userId = req.params.id;
+    const appliedJobs = await UserJob.find({ userId, activity: "apply" }).populate("jobId").populate("userId");
     if (!appliedJobs) {
       res.status(400).json({
         success: false,
@@ -254,6 +254,31 @@ export const getAppliedUsers = async (req, res) => {
     return res.status(400).json({
       success: false,
       error: "Failed to get applied users",
+    });
+  }
+};
+
+// CHECK IF USER HAS APPLIED FOR A JOB
+export const checkIfApplied = async (req, res) => {
+  try {
+    const { userId, jobId } = req.body;
+    const isApplied = await UserJob.findOne({ userId, jobId, activity: "apply" });
+    if (!isApplied) {
+      res.status(200).json({
+        success: true,
+        isApplied: false,
+      });
+    }
+    if (isApplied) {
+      res.status(200).json({
+        success: true,
+        isApplied: true,
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: "Failed to check if user has applied for the job",
     });
   }
 };

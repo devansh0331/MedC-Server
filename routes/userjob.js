@@ -2,6 +2,7 @@ import express from "express";
 import { verifyToken } from "../middleware/verifyToken.js";
 import {
   applyJob,
+  checkIfApplied,
   checkIfSaved,
   deleteJobApplication,
   getAppliedJobs,
@@ -30,5 +31,6 @@ router.post(
 router.post("/delete-application", verifyToken, deleteJobApplication);
 router.get("/get-applied-jobs/:id", verifyToken, getAppliedJobs);
 router.get("/get-users-job/:id", verifyToken, getAppliedUsers);
+router.post("/check-application", verifyToken, checkIfApplied);
 
 export default router;
