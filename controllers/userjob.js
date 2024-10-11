@@ -126,7 +126,7 @@ export const getSavedJobs = async (req, res) => {
 export const getPostedJobs = async (req, res) => {
   try {
     const userId = req.params.id;
-    const postedJobs = await UserJob.find({ userId, activity: "post" });
+    const postedJobs = await UserJob.find({ userId, activity: "post" }).populate("jobId").populate("userId");
     if (!postedJobs) {
       res.status(400).json({
         success: false,
@@ -236,8 +236,8 @@ export const getAppliedJobs = async (req, res) => {
 // GET ALL USERS WHO APPLIED FOR A JOB
 export const getAppliedUsers = async (req, res) => {
   try {
-    const jobId = req.body.id;
-    const appliedUsers = await UserJob.find({ jobId, activity: "apply" });
+    const jobId = req.params.id;
+    const appliedUsers = await UserJob.find({ jobId, activity: "apply" }).populate("userId");
     if (!appliedUsers) {
       res.status(400).json({
         success: false,
