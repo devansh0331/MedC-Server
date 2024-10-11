@@ -1,5 +1,6 @@
 import Job from "../models/Job.js";
 import UserJob from "../models/UserJob.js";
+import User from "../models/User.js";
 
 export const createJob = async (req, res) => {
   try {
@@ -10,12 +11,10 @@ export const createJob = async (req, res) => {
       location,
       salaryRange,
       requiredQualification,
-      benefits,
-      skills,
-      experience,
-      workTiming,
-      jobType,
-      jobDescription,
+      employementType,
+      minExperience,
+      lastDateToApply,
+      description,
     } = req.body;
 
     const newJob = await Job.create({
@@ -25,12 +24,14 @@ export const createJob = async (req, res) => {
       location,
       salaryRange,
       requiredQualification,
-      benefits,
-      skills,
-      experience,
-      workTiming,
-      jobType,
-      jobDescription,
+      employementType,
+      minExperience,
+      lastDateToApply,
+      description,
+      archived: false,
+      userArchived: false,
+      noOfApplications: 0,
+      noOfHirings: 0,
     });
 
     if (!newJob) {

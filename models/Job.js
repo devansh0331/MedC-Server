@@ -10,15 +10,15 @@ const JobSchema = new mongoose.Schema({
   organziationName: String,
   location: String,
   salaryRange: String,
-  experience: String,
   requiredQualification: String,
   employementType: String,
-  minExperience: Number,
+  minExperience: String,
   lastDateToApply: Date,
-  jobDescription: String, 
+  description: String, 
   archived: Boolean,
   userArchived: Boolean,
   noOfApplications: Number,
+  noOfHirings: Number,
 });
 
 const Job = mongoose.model("Job", JobSchema);
