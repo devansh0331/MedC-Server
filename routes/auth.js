@@ -99,7 +99,16 @@ router.post("/update-profile/add/education", verifyToken, addEducation);
 
 router.post("/update-profile/edit/achievement/:id", updateAchievement);
 router.post("/update-profile/edit/experience/:id", updateExperience);
-router.post("/update-profile/edit/certificate/:id", updateCertificate);
+router.post(
+  "/update-profile/edit/certificate-without-file/:id",
+  upload.none(),
+  updateCertificate
+);
+router.post(
+  "/update-profile/edit/certificate-with-file/:id",
+  upload.single("filepath"),
+  updateCertificate
+);
 router.post("/update-profile/edit/education/:id", updateEducation);
 
 router.post("/update-profile/delete/achievement/:id", deleteAchievement);
