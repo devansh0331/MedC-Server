@@ -1,4 +1,7 @@
+import Job from "../models/Job.js";
 import UserJob from "../models/UserJob.js";
+
+import sendEmail from "../middleware/sendEmail.js";
 
 // SAVE JOB
 export const saveJob = async (req, res) => {
@@ -6,7 +9,11 @@ export const saveJob = async (req, res) => {
     const { userId, jobId } = req.body;
 
     // Check if the job is already saved by the user
-    const existingSave = await UserJob.findOne({ userId, jobId, activity: "save" });
+    const existingSave = await UserJob.findOne({
+      userId,
+      jobId,
+      activity: "save",
+    });
     if (existingSave) {
       return res.status(400).json({
         success: false,
@@ -98,10 +105,12 @@ export const getSavedJobs = async (req, res) => {
   try {
     const userId = req.params.id;
     console.log(userId);
-    
-    const savedJobs = await UserJob.find({ userId, activity: "save" }).populate("jobId").populate("userId");
+
+    const savedJobs = await UserJob.find({ userId, activity: "save" })
+      .populate("jobId")
+      .populate("userId");
     console.log(savedJobs);
-    
+
     if (!savedJobs) {
       res.status(400).json({
         success: false,
@@ -126,7 +135,9 @@ export const getSavedJobs = async (req, res) => {
 export const getPostedJobs = async (req, res) => {
   try {
     const userId = req.params.id;
-    const postedJobs = await UserJob.find({ userId, activity: "post" }).populate("jobId").populate("userId");
+    const postedJobs = await UserJob.find({ userId, activity: "post" })
+      .populate("jobId")
+      .populate("userId");
     if (!postedJobs) {
       res.status(400).json({
         success: false,
@@ -212,7 +223,9 @@ export const deleteJobApplication = async (req, res) => {
 export const getAppliedJobs = async (req, res) => {
   try {
     const userId = req.params.id;
-    const appliedJobs = await UserJob.find({ userId, activity: "apply" }).populate("jobId").populate("userId");
+    const appliedJobs = await UserJob.find({ userId, activity: "apply" })
+      .populate("jobId")
+      .populate("userId");
     if (!appliedJobs) {
       res.status(400).json({
         success: false,
@@ -237,7 +250,10 @@ export const getAppliedJobs = async (req, res) => {
 export const getAppliedUsers = async (req, res) => {
   try {
     const jobId = req.params.id;
-    const appliedUsers = await UserJob.find({ jobId, activity: "apply" }).populate("userId");
+    const appliedUsers = await UserJob.find({
+      jobId,
+      activity: "apply",
+    }).populate("userId");
     if (!appliedUsers) {
       res.status(400).json({
         success: false,
@@ -262,7 +278,11 @@ export const getAppliedUsers = async (req, res) => {
 export const checkIfApplied = async (req, res) => {
   try {
     const { userId, jobId } = req.body;
-    const isApplied = await UserJob.findOne({ userId, jobId, activity: "apply" });
+    const isApplied = await UserJob.findOne({
+      userId,
+      jobId,
+      activity: "apply",
+    });
     if (!isApplied) {
       res.status(200).json({
         success: true,
@@ -280,5 +300,51 @@ export const checkIfApplied = async (req, res) => {
       success: false,
       error: "Failed to check if user has applied for the job",
     });
+  }
+};
+export const shortListCandidate = async (req, res) => {
+  try {
+    console.log("Shorlist Candidate Function...");
+    const { candidateId, candidateEmail } = req.body;
+    console.log(candidateEmail, candidateId);
+
+    const jobId = req.params.id;
+    const owner = req.user.id;
+    console.log(jobId, owner);
+    const job = await Job.findById(jobId);
+
+    if (!job)
+      return res.status(400).json({ success: false, error: "No job found!" });
+    else if (job.user != owner)
+      return res
+        .status(400)
+        .json({ success: false, error: "You are not authorized" });
+    else {
+      // Send OTP via email
+      console.log();
+      await sendEmail({
+        to: candidateEmail,
+        subject: "Your profile has been shortlisted",
+        message: `<p>Congratulations! You are shortlisted and qualified for the next round.</p>`,
+      });
+      console.log("Before Change: " + job);
+
+      job.noOfShortListed = job.noOfShortListed + 1;
+
+      console.log("After Change: " + job);
+      await job.save();
+
+      await UserJob.findOneAndUpdate(
+        { userId: candidateId, jobId, activity: "apply" },
+
+        { activity: "shortlist" }
+      );
+
+      return res.status(200).json({ success: true, message: "Email sent" });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error!" });
   }
 };

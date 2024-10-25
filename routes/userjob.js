@@ -10,6 +10,7 @@ import {
   getPostedJobs,
   getSavedJobs,
   saveJob,
+  shortListCandidate,
   unsaveJob,
 } from "../controllers/userjob.js";
 import upload from "../middleware/upload.js";
@@ -32,5 +33,6 @@ router.post("/delete-application", verifyToken, deleteJobApplication);
 router.get("/get-applied-jobs/:id", verifyToken, getAppliedJobs);
 router.get("/get-users-job/:id", verifyToken, getAppliedUsers);
 router.post("/check-application", verifyToken, checkIfApplied);
+router.post("/shortlist-candidate/:id", verifyToken, shortListCandidate);
 
 export default router;
