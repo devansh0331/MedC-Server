@@ -288,7 +288,6 @@ export const getConnections = async (req, res) => {
     res.status(400).json({ success: false, error: err.message });
   }
 };
-
 export const getUserExperience = async (req, res) => {
   try {
     const id = req.params.id;

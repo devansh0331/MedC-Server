@@ -446,8 +446,11 @@ export const deleteAchievement = async (req, res) => {
 export const addCertificate = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { certificate, issuer, description } = req.body;
-
+    console.log("Hello");
+    const { certificate, issuer, description } = JSON.parse(req.body.data);
+    
+    console.log(certificate, issuer, description);
+    let fileURL = null;
     // uploading certificate
     if (req.file && req.file.path) {
       console.log(req.file.path);
@@ -455,7 +458,7 @@ export const addCertificate = async (req, res) => {
       const result = await cloudinary.uploader.upload(file);
       fileURL = result.secure_url;
     }
-
+    console.log("fileURL", fileURL);
     const newCertificate = await Certificate.create({
       userId,
       certificate,
@@ -483,12 +486,11 @@ export const updateCertificate = async (req, res) => {
     const id = req.params.id;
     const { certificate, issuer, description } = req.body;
 
-    const newCertificate = await Certificate.findByIdAndUpdate(id, {
-      certificate,
-      issuer,
-      description,
-    });
+    console.log(certificate, issuer, description);
 
+    const newCertificate = await Certificate.findByIdAndUpdate(id, {certificate, issuer, description});
+    console.log(newCertificate);
+    
     if (!newCertificate)
       res
         .status(400)
@@ -503,6 +505,7 @@ export const updateCertificate = async (req, res) => {
       .json({ success: false, error: "Failed to update certificate" });
   }
 };
+
 export const deleteCertificate = async (req, res) => {
   try {
     const id = req.params.id;

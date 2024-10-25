@@ -250,10 +250,14 @@ export const getAppliedJobs = async (req, res) => {
 export const getAppliedUsers = async (req, res) => {
   try {
     const jobId = req.params.id;
+<<<<<<< HEAD
     const appliedUsers = await UserJob.find({
       jobId,
       activity: "apply",
     }).populate("userId");
+=======
+    const appliedUsers = await UserJob.find({ jobId, activity: "apply" }).populate("userId").populate("resume");
+>>>>>>> e67bc85eb1bb3292d7ccbcb20080bba2dee07ad1
     if (!appliedUsers) {
       res.status(400).json({
         success: false,
