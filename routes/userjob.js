@@ -11,6 +11,7 @@ import {
   getSavedJobs,
   saveJob,
   shortListCandidate,
+  shortListCandidateWithoutJob,
   unsaveJob,
 } from "../controllers/userjob.js";
 import upload from "../middleware/upload.js";
@@ -34,5 +35,6 @@ router.get("/get-applied-jobs/:id", verifyToken, getAppliedJobs);
 router.get("/get-users-job/:id", verifyToken, getAppliedUsers);
 router.post("/check-application", verifyToken, checkIfApplied);
 router.post("/shortlist-candidate/:id", verifyToken, shortListCandidate);
+router.post("/shortlist-candidate-directly", verifyToken, shortListCandidateWithoutJob);
 
 export default router;
