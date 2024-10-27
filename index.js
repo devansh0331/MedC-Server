@@ -20,6 +20,7 @@ import blogRoutes from "./routes/blog.js";
 import reportRoutes from "./routes/report.js";
 import userjobRoutes from "./routes/userjob.js";
 import userResumeRoutes from "./routes/userResume.js";
+import newPosts from "./routes/newposts.js";
 import fakeJobsData from "./FakeDatabase.js";
 import Post from "./models/Post.js";
 import fakePostsData from "./FakePosts.js";
@@ -63,6 +64,7 @@ app.use("/blog", blogRoutes);
 app.use("/report", reportRoutes);
 app.use("/userjob", userjobRoutes);
 app.use("/userResume", userResumeRoutes);
+app.use("/newposts", newPosts);
 
 // console.log(process.env.MONGO_URL);
 const PORT = process.env.PORT || 5000;
