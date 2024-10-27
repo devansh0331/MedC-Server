@@ -100,7 +100,7 @@ export const getSingleBlog = async (req, res) => {
     const blogs = await Blog.findById(blogId);
     console.log(blogs);
     
-    if (blogs.length > 0) res.status(200).json({ success: true, data: blogs });
+    if (blogs) res.status(200).json({ success: true, data: blogs });
     else res.status(404).json({ success: false, message: "No blogs found" });
   } catch (error) {
     res.status(400).json({ success: false, error: "Failed to get blogs" });
