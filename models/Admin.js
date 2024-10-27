@@ -5,6 +5,10 @@ const AdminSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
+  noOfHirings: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Admin = mongoose.model("admin", AdminSchema);

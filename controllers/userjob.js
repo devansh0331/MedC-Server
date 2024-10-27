@@ -1,6 +1,6 @@
 import Job from "../models/Job.js";
 import UserJob from "../models/UserJob.js";
-
+import Admin from "../models/Admin.js";
 import sendEmail from "../middleware/sendEmail.js";
 
 // SAVE JOB
@@ -253,6 +253,9 @@ export const getAppliedUsers = async (req, res) => {
     const appliedUsers = await UserJob.find({ jobId, activity: "apply" })
       .populate("userId")
       .populate("resume");
+    const appliedUsers = await UserJob.find({ jobId, activity: "apply" })
+      .populate("userId")
+      .populate("resume");
     if (!appliedUsers) {
       res.status(400).json({
         success: false,
@@ -301,15 +304,16 @@ export const checkIfApplied = async (req, res) => {
     });
   }
 };
+
+// SHORTLIST CANDIDATE
 export const shortListCandidate = async (req, res) => {
   try {
-    console.log("Shorlist Candidate Function...");
-    const { candidateId, candidateEmail } = req.body;
-    console.log(candidateEmail, candidateId);
-
+    // console.log("Shorlist Candidate Function...");
+    const { candidateId, candidateEmail, mailbody } = req.body;
+    // console.log(candidateEmail, candidateId);
     const jobId = req.params.id;
     const owner = req.user.id;
-    console.log(jobId, owner);
+    // console.log(jobId, owner);
     const job = await Job.findById(jobId);
 
     if (!job)
@@ -320,27 +324,51 @@ export const shortListCandidate = async (req, res) => {
         .json({ success: false, error: "You are not authorized" });
     else {
       // Send OTP via email
-      console.log();
+      // console.log();
       await sendEmail({
         to: candidateEmail,
-        subject: "Your profile has been shortlisted",
-        message: `<p>Congratulations! You are shortlisted and qualified for the next round.</p>`,
+        subject: "Your profile has been shortlisted at MedC Job Portal",
+        message: `${mailbody}`,
       });
-      console.log("Before Change: " + job);
+      // console.log("Before Change: " + job);
 
       job.noOfShortListed = job.noOfShortListed + 1;
 
-      console.log("After Change: " + job);
+      // console.log("After Change: " + job);
       await job.save();
 
       await UserJob.findOneAndUpdate(
         { userId: candidateId, jobId, activity: "apply" },
-
         { activity: "shortlist" }
       );
 
       return res.status(200).json({ success: true, message: "Email sent" });
     }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error!" });
+  }
+};
+
+// SHORTLIST CANDIDATE WITHOUT JOB ID
+export const shortListCandidateWithoutJob = async (req, res) => {
+  try {
+    const { candidateEmail, mailbody } = req.body;
+    const owner = req.user.id;
+
+    await sendEmail({
+      to: candidateEmail,
+      subject: "Your profile has been shortlisted at MedC Job Portal",
+      message: `${mailbody}`,
+    });
+
+    await Admin.findOneAndUpdate(
+      { userId: "664f9e4252492b36eb5c94cf" },
+      { $inc: { noOfHirings: 1 } }
+    );
+
+    return res.status(200).json({ success: true, message: "Email sent" });
   } catch (error) {
     return res
       .status(500)
