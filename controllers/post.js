@@ -6,7 +6,7 @@ export const createPost = async (req, res) => {
   try {
     const { audience, description } = JSON.parse(req.body.data);
     const user = req.user.id;
-    console.log(audience, description, user);
+    // console.log(audience, description, user);
     let fileURL = "";
     // console.log("Hello " + fileURL);
     if (req.file && req.file.path) {
