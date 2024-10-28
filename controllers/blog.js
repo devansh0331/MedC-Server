@@ -23,7 +23,7 @@ export const addBlog = async (req, res) => {
 
     res.status(201).json({ success: true, data: newBlog, message: "Blog created successfully" });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(400).json({ success: false, error: "Failed to add blog" });
   }
 };
@@ -52,7 +52,7 @@ export const editBlog = async (req, res) => {
     const updatedBlog = await existingBlog.save();
 
     // Respond with success message and the updated blog data
-    res.status(200).json({ success: true, data: updatedBlog });
+    res.status(200).json({ success: true, data: updatedBlog, message: "Blog updated successfully" });
   } catch (error) {
     console.error(error); // Log the error for debugging
     res.status(400).json({ success: false, error: "Failed to edit blog" });
@@ -95,10 +95,10 @@ export const getUserBlogs = async (req, res) => {
 export const getSingleBlog = async (req, res) => {
   try {
     const blogId = req.params.id;
-    console.log(blogId);
+    // console.log(blogId);
     
     const blogs = await Blog.findById(blogId);
-    console.log(blogs);
+    // console.log(blogs);
     
     if (blogs) res.status(200).json({ success: true, data: blogs });
     else res.status(404).json({ success: false, message: "No blogs found" });
