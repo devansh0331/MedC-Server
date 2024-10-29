@@ -373,3 +373,21 @@ export const shortListCandidateWithoutJob = async (req, res) => {
       .json({ success: false, error: "Internal Server Error!" });
   }
 };
+// CONTACT US MAIL
+export const contactUsMail = async (req, res) => {
+  try {
+    const { candidateEmail, mailbody } = req.body;
+
+    await sendEmail({
+      to: candidateEmail,
+      subject: "You have a new query at MedC Job Portal",
+      message: `${mailbody}`,
+    });
+
+    return res.status(200).json({ success: true, message: "Email sent" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error!" });
+  }
+};

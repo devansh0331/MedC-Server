@@ -4,6 +4,7 @@ import {
   applyJob,
   checkIfApplied,
   checkIfSaved,
+  contactUsMail,
   deleteJobApplication,
   getAppliedJobs,
   getAppliedUsers,
@@ -36,5 +37,6 @@ router.get("/get-users-job/:id", verifyToken, getAppliedUsers);
 router.post("/check-application", verifyToken, checkIfApplied);
 router.post("/shortlist-candidate/:id", verifyToken, shortListCandidate);
 router.post("/shortlist-candidate-directly", verifyToken, shortListCandidateWithoutJob);
+router.post("/contactus-mail", contactUsMail);
 
 export default router;
