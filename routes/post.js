@@ -22,8 +22,8 @@ import { verifyToken } from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
-router.post("/create-post", verifyToken, upload.single("filepath"), createPost);
-router.post("/create-post-no-file", verifyToken, upload.none(), createPost);
+router.post("/create-post", verifyToken, createPost);
+// router.post("/create-post-no-file", verifyToken, upload.none(), createPost);
 router.get("/all-posts", getAllPosts);
 router.get("/single-post/:id", getSinglePost);
 router.post("/single-post/like/:id", verifyToken, likePost);
@@ -36,7 +36,7 @@ router.get("/get-archived-posts", verifyToken, getAllArchivedPosts);
 router.get("/get-user-posts/:id", verifyToken, getSingleUserPosts);
 router.post("/update-post/:id", verifyToken, updatePost);
 router.post("/archive-post/:id", verifyToken, deletePostByAdmin);
-router.post("/delete-post/:id", verifyToken, deletePost)
+router.post("/delete-post/:id", verifyToken, deletePost);
 router.post("/archive-post-by-user/:id", verifyToken, archivePostbyUser);
 router.post("/restore-post-by-user/:id", verifyToken, restorePost);
 router.get("/get-user-archived-posts/:id", verifyToken, userArchivedPost);

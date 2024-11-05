@@ -4,17 +4,18 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const createPost = async (req, res) => {
   try {
-    const { audience, description } = JSON.parse(req.body.data);
+    const { audience, description, fileURL } = JSON.parse(req.body.data);
+    console.log(audience);
     const user = req.user.id;
     // console.log(audience, description, user);
-    let fileURL = "";
+    // let fileURL = "";
     // console.log("Hello " + fileURL);
-    if (req.file && req.file.path) {
-      console.log(req.file.path);
-      const file = req.file.path;
-      const result = await cloudinary.uploader.upload(file);
-      fileURL = result.secure_url;
-    }
+    // if (req.file && req.file.path) {
+    //   console.log(req.file.path);
+    //   const file = req.file.path;
+    //   const result = await cloudinary.uploader.upload(file);
+    //   fileURL = result.secure_url;
+    // }
     const post = await Post.create({
       user,
       audience,
@@ -305,9 +306,12 @@ export const deletePost = async (req, res) => {
 export const archivePostbyUser = async (req, res) => {
   try {
     const postId = req.params.id;
-    const post = await Post.findByIdAndUpdate(postId, { archived: true, userArchived: true });
+    const post = await Post.findByIdAndUpdate(postId, {
+      archived: true,
+      userArchived: true,
+    });
     console.log(post);
-    
+
     if (!post)
       return res
         .status(400)
@@ -326,7 +330,10 @@ export const archivePostbyUser = async (req, res) => {
 export const restorePost = async (req, res) => {
   try {
     const postId = req.params.id;
-    const post = await Post.findByIdAndUpdate(postId, { archived: false, userArchived: false });
+    const post = await Post.findByIdAndUpdate(postId, {
+      archived: false,
+      userArchived: false,
+    });
     if (!post)
       return res
         .status(400)
@@ -345,8 +352,8 @@ export const restorePost = async (req, res) => {
 export const userArchivedPost = async (req, res) => {
   try {
     const userId = req.params.id;
-    
-    const posts = await Post.find({user: userId, userArchived: true })
+
+    const posts = await Post.find({ user: userId, userArchived: true })
       .sort({ createdAt: -1 })
       .populate("user", "name profileURL bio");
     if (!userId) {
@@ -371,4 +378,3 @@ export const userArchivedPost = async (req, res) => {
       .json({ success: false, error: "Failed to get archived post!" });
   }
 };
-
