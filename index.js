@@ -11,7 +11,7 @@ import Job from "./models/Job.js";
 
 // routes import
 import authRoutes from "./routes/auth.js";
-import usersRoutes from "./routes/users.js";
+import usersRoutes from "./routes/users.js"; 
 import otpRoutes from "./routes/otp.js";
 import jobRoutes from "./routes/job.js";
 import postRoutes from "./routes/post.js";
@@ -25,6 +25,7 @@ import fakeJobsData from "./FakeDatabase.js";
 import Post from "./models/Post.js";
 import fakePostsData from "./FakePosts.js";
 import UserJob from "./models/UserJob.js";
+// const cloudinary = require('cloudinary').v2;
 
 // CONFIGURATIONS
 dotenv.config();
@@ -34,6 +35,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET, // Click 'View Credentials' below to copy your API secret
   secure: true,
 });
+console.log(cloudinary.config());
 const app = express();
 app.use(express.json());
 app.use(helmet());
@@ -48,7 +50,6 @@ app.use(
       process.env.PRODUCTION_URL,
       "http://localhost:5173",
       "http://localhost:5174",
-      "https://www.medcofficial.com/",
     ],
   })
 );

@@ -210,6 +210,8 @@ export const updateSocialInfo = async (req, res) => {
       const profile = req.file.path;
       const result = await cloudinary.uploader.upload(profile);
       profileURL = result.secure_url;
+      console.log(profileURL);
+      
       user = await User.findByIdAndUpdate(
         id,
         {
