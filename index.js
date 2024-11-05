@@ -33,9 +33,8 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET, // Click 'View Credentials' below to copy your API secret
-  secure: true,
 });
-console.log(cloudinary.config());
+// console.log(cloudinary.config());
 const app = express();
 app.use(express.json());
 app.use(helmet());
@@ -53,8 +52,6 @@ app.use(
     ],
   })
 );
-
-console.log(process.env.CLIENT_URL);
 
 // ROUTES
 app.use("/auth", authRoutes);
