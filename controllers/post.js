@@ -1,21 +1,13 @@
 import Post from "../models/Post.js";
 import Comments from "../models/Comments.js";
-import { v2 as cloudinary } from "cloudinary";
 
 export const createPost = async (req, res) => {
   try {
-    const { audience, description, fileURL } = JSON.parse(req.body.data);
+    const { audience, description, fileURL } = req.body;
     console.log(audience);
     const user = req.user.id;
-    // console.log(audience, description, user);
-    // let fileURL = "";
-    // console.log("Hello " + fileURL);
-    // if (req.file && req.file.path) {
-    //   console.log(req.file.path);
-    //   const file = req.file.path;
-    //   const result = await cloudinary.uploader.upload(file);
-    //   fileURL = result.secure_url;
-    // }
+    console.log("post", audience, description, user, fileURL);
+    
     const post = await Post.create({
       user,
       audience,
@@ -26,7 +18,7 @@ export const createPost = async (req, res) => {
       archived: false,
       userArchived: false,
     });
-    console.log(post);
+    console.log("post", post);
     if (!post)
       return res
         .status(400)

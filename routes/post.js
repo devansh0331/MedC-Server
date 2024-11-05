@@ -17,13 +17,11 @@ import {
   updatePost,
   userArchivedPost,
 } from "../controllers/post.js";
-import upload from "../middleware/upload.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
 router.post("/create-post", verifyToken, createPost);
-// router.post("/create-post-no-file", verifyToken, upload.none(), createPost);
 router.get("/all-posts", getAllPosts);
 router.get("/single-post/:id", getSinglePost);
 router.post("/single-post/like/:id", verifyToken, likePost);
