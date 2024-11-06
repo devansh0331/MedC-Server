@@ -200,18 +200,20 @@ export const updateAbout = async (req, res) => {
 export const updateSocialInfo = async (req, res) => {
   try {
     const id = req.user.id;
-    const { name, bio, email, location, contact, linkedin, twitter, website } =
-      JSON.parse(req.body.data);
+    const {
+      name,
+      bio,
+      email,
+      location,
+      contact,
+      linkedin,
+      twitter,
+      website,
+      fileURL,
+    } = req.body;
 
-    let profileURL = "";
     let user;
-    if (req.file && req.file.path) {
-      console.log(req.file.path);
-      const profile = req.file.path;
-      const result = await cloudinary.uploader.upload(profile);
-      profileURL = result.secure_url;
-      console.log(profileURL);
-      
+    if (fileURL != null) {
       user = await User.findByIdAndUpdate(
         id,
         {
@@ -223,7 +225,7 @@ export const updateSocialInfo = async (req, res) => {
           linkedin,
           twitter,
           website,
-          profileURL,
+          profileURL: fileURL,
         },
         { new: true }
       );
@@ -450,7 +452,7 @@ export const addCertificate = async (req, res) => {
     const userId = req.user.id;
     console.log("Hello");
     const { certificate, issuer, description } = JSON.parse(req.body.data);
-    
+
     console.log(certificate, issuer, description);
     let fileURL = null;
     // uploading certificate
@@ -490,9 +492,13 @@ export const updateCertificate = async (req, res) => {
 
     console.log(certificate, issuer, description);
 
-    const newCertificate = await Certificate.findByIdAndUpdate(id, {certificate, issuer, description});
+    const newCertificate = await Certificate.findByIdAndUpdate(id, {
+      certificate,
+      issuer,
+      description,
+    });
     console.log(newCertificate);
-    
+
     if (!newCertificate)
       res
         .status(400)

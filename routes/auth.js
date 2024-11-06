@@ -70,7 +70,7 @@ router.post(
 router.post(
   "/update-profile/social-info",
   verifyToken,
-  upload.single("filepath"),
+
   updateSocialInfo
 );
 router.get("/profile", verifyToken, getUser);
