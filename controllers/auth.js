@@ -36,6 +36,8 @@ export const register = async (req, res) => {
       name,
       email,
       password: passwordHash,
+      isUserDeactivated: false,
+      isDeactivated: false,
     });
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
@@ -82,6 +84,8 @@ export const signInWithGoogle = async (req, res) => {
         password: passwordHash,
         profileURL: picture,
         isGoogleSignIn: true,
+        isUserDeactivated: false,
+        isDeactivated: false,
       });
       const savedUser = await newUser.save();
       const jwttoken = jwt.sign(

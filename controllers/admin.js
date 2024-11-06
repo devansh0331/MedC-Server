@@ -1,3 +1,4 @@
+import sendEmail from "../middleware/sendEmail.js";
 import Admin from "../models/Admin.js";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
@@ -71,6 +72,7 @@ export const getAllPosts = async (req, res) => {
 export const deactivateAccount = async (req, res) => {
   try {
     const id = req.params.id;
+    const {userEmail, mailbody} = req.body;
     const user = await User.findById(id);
     if (!user) {
       return res
@@ -83,10 +85,16 @@ export const deactivateAccount = async (req, res) => {
           { isDeactivated: true },
           { new: true }
         );
+        await sendEmail({
+          to: userEmail,
+          subject: "Your account has been deactivated at MedC Job Portal",
+          message: `${mailbody}`,
+        })
         return res.status(200).json({
           success: true,
           message: "Account Deactivated Successfully!",
         });
+
       } else {
         await User.findByIdAndUpdate(id, { isDeactivated: false });
         return res

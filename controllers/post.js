@@ -215,7 +215,7 @@ export const getAllLivePosts = async (req, res) => {
 export const getAllArchivedPosts = async (req, res) => {
   try {
     const userId = req.user;
-    const posts = await Post.find({ archived: true })
+    const posts = await Post.find({ archived: true, userArchived: false })
       .sort({ createdAt: -1 })
       .populate("user", "name profileURL bio");
     if (!userId) {

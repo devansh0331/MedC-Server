@@ -50,6 +50,7 @@ export const getAllUser = async (req, res) => {
       { name: 1, _id: 1, location: 1, bio: 1, profileURL: 1, about: 1, email: 1 }
     );
 
+    // const users = await User.find({isDeactivated: false, isUserDeactivated: false}).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: users });
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
