@@ -9,23 +9,23 @@ import User from "../models/User.js";
 export const getSingleUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log("User Id: ", userId);
+    // console.log("User Id: ", userId);
     const id = req.user.id;
-    console.log("Id: ", id);
+    // console.log("Id: ", id);
     const user = await User.findById(userId, {
       password: 0,
       isGoogleSignIn: 0,
     }).populate("experience");
     if (!user)
       res.status(400).json({ success: false, error: "User not found" });
-    else {
-      if (
-        (!user.isDeactivated || user.isDeactivated == false) &&
-        (!user.isUserDeactivated || user.isUserDeactivated == false)
-      )
-        return res
-          .status(200)
-          .json({ success: true, user: user, isExisting: userId == id });
+    else if (
+      (user.isDeactivated && user.isDeactivated == true)
+    ){
+      return res.status(404).json({ success: false, error: "User does not exist" });
+    }else{
+      return res
+        .status(200)
+        .json({ success: true, user: user, isExisting: userId == id });
     }
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
@@ -40,17 +40,15 @@ export const getAllUser = async (req, res) => {
       {
         $or: [
           { isDeactivated: { $exists: false } },
-          { isDeactivated: { $ne: true } },
+          { isDeactivated: {$eq: false} },
         ],
-        $or: [
-          { isUserDeactivated: { $exists: false } },
-          { isUserDeactivated: { $ne: true } },
-        ],
+        // $or: [
+        //   { isUserDeactivated: { $exists: false } },
+        //   { isUserDeactivated: {$eq: false} },
+        // ],
       },
-      { name: 1, _id: 1, location: 1, bio: 1, profileURL: 1, about: 1, email: 1 }
-    );
-
-    // const users = await User.find({isDeactivated: false, isUserDeactivated: false}).sort({ createdAt: -1 });
+      { name: 1, _id: 1, location: 1, bio: 1, profileURL: 1, about: 1, email: 1, isUserDeactivated: 1, isDeactivated: 1 }
+    ); 
     res.status(200).json({ success: true, data: users });
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
@@ -323,5 +321,34 @@ export const getUserCertificate = async (req, res) => {
     res.status(200).json({ success: true, data: certificate });
   } catch (err) {
     res.status(404).json({ success: false, message: err.message });
+  }
+};
+export const deactivateAccountbyUser = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, error: "User does not exists!" });
+    } else {
+      if (!user.isUserDeactivated || user.isUserDeactivated == false) {
+        await User.findByIdAndUpdate(
+          id,
+          { isUserDeactivated: true, isDeactivated: true },
+          { new: true }
+        );
+        return res.status(200).json({
+          success: true,
+          message: "Account Deactivated Successfully!",
+        });
+      } else {
+        return res
+          .status(400)
+          .json({ success: false, error: "Cannot deactivate account!" });
+      }
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 };

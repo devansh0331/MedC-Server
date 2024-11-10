@@ -73,6 +73,8 @@ export const deactivateAccount = async (req, res) => {
   try {
     const id = req.params.id;
     const {userEmail, mailbody} = req.body;
+    // console.log(userEmail, mailbody);
+    
     const user = await User.findById(id);
     if (!user) {
       return res
@@ -125,6 +127,41 @@ export const deactivatedAccounts = async (req, res) => {
       success: false,
 
       error: "Failed to get deactivated accounts",
+    });
+  }
+};
+
+export const activateAccount = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const {userEmail, mailbody} = req.body;  
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, error: "User does not exists!" });
+    } else {
+      if (!user.isDeactivated || user.isDeactivated == true) {
+        await User.findByIdAndUpdate(
+          id,
+          { isDeactivated: false, isUserDeactivated: false },
+          { new: true }
+        );
+        await sendEmail({
+          to: userEmail,
+          subject: "Your account has been activated at MedC Job Portal",
+          message: `${mailbody}`,
+        })
+        return res.status(200).json({
+          success: true,
+          message: "Account Activated Successfully!",
+        });
+    }
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: "Failed to activate account",
     });
   }
 };

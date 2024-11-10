@@ -3,6 +3,7 @@ import { verifyToken } from "../middleware/verifyToken.js";
 import {
   acceptRequest,
   checkFriendStatus,
+  deactivateAccountbyUser,
   getAllUser,
   getConnections,
   getReceivedRequests,
@@ -29,6 +30,6 @@ router.get("/single-user/experience/:id", getUserExperience);
 router.get("/single-user/education/:id", getUserEducation);
 router.get("/single-user/achievement/:id", getUserAchievement);
 router.get("/single-user/certificate/:id", getUserCertificate);
-// router.post("/friends/all", getAllFriends);
+router.post("/deactivate-account", verifyToken, deactivateAccountbyUser);
 
 export default router;
