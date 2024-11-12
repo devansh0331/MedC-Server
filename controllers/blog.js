@@ -1,29 +1,18 @@
 import Blog from "../models/Blog.js";
-import { v2 as cloudinary } from "cloudinary";
 
 export const addBlog = async (req, res) => {
   try {
-    const { title, content } = JSON.parse(req.body.data);
+    const { title, content, coverImage } = req.body;
     const userId = req.user.id; 
-
-    let fileURL = "";
-    if (req.file && req.file.path) {
-      console.log(req.file.path);
-      const file = req.file.path;
-      const result = await cloudinary.uploader.upload(file);
-      fileURL = result.secure_url;
-    }
-
     const newBlog = await Blog.create({
       title,
       content,
-      coverImage: fileURL,
+      coverImage: coverImage,
       userId,
     });
 
     res.status(201).json({ success: true, data: newBlog, message: "Blog created successfully" });
   } catch (error) {
-    // console.error(error);
     res.status(400).json({ success: false, error: "Failed to add blog" });
   }
 };
@@ -72,10 +61,11 @@ export const deleteBlog = async (req, res) => {
 };
 
 export const getAllBlogs = async (req, res) => {
+  
   try {
-    const blogs = await Blog.find().populate("userId");
-    if (blogs.length > 0) res.status(200).json({ success: true, data: blogs });
-    else res.status(404).json({ success: false, message: "No blogs found" });
+    const blogs = await Blog.find();
+    if (blogs) res.status(200).json({ success: true, data: blogs });
+    else res.status(404).json({ success: false, error: "Failed to get blogs" });
   } catch (error) {
     res.status(400).json({ success: false, error: "Failed to get blogs" });
   }
@@ -95,10 +85,7 @@ export const getUserBlogs = async (req, res) => {
 export const getSingleBlog = async (req, res) => {
   try {
     const blogId = req.params.id;
-    // console.log(blogId);
-    
     const blogs = await Blog.findById(blogId);
-    // console.log(blogs);
     
     if (blogs) res.status(200).json({ success: true, data: blogs });
     else res.status(404).json({ success: false, message: "No blogs found" });

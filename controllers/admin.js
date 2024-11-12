@@ -6,7 +6,7 @@ import User from "../models/User.js";
 export const isAdmin = async(req,res) => {
   try {
     const id = req.admin;
-    console.log("Admin" + id);
+    // console.log("Admin" + id);
     
     if(id == null || id == undefined){
       return res.status(400).json({success: false, error: "User is not admin!"});
@@ -19,7 +19,6 @@ export const isAdmin = async(req,res) => {
     return res.status(500).json({success: false, error: error.message});
   }
 }
-
 export const addAdmin = async (req, res) => {
   try {
     const  userId  = req.params.id;
@@ -108,11 +107,10 @@ export const deactivateAccount = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
-
 export const deactivatedAccounts = async (req, res) => {
   try {
     const deactivatedUsers = await User.find({ isDeactivated: true });
-    if (!deactivatedUsers || deactivatedUsers.length < 1) {
+    if (!deactivatedUsers) {
       return res
         .status(400)
         .json({ success: false, error: "No Deactivated Accounts!" });
@@ -130,7 +128,6 @@ export const deactivatedAccounts = async (req, res) => {
     });
   }
 };
-
 export const activateAccount = async (req, res) => {
   try {
     const id = req.params.id;
@@ -165,3 +162,35 @@ export const activateAccount = async (req, res) => {
     });
   }
 };
+export const isUserAdmin = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const admin = await Admin.findOne({ userId: id });
+    if (!admin) {
+      return res.status(400).json({ success: false, error: "User is not admin!" });
+    } else {
+      return res.status(200).json({ success: true, message: "User is admin!" });
+    }
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+};
+ export const getAllAdmins = async (req, res) => {
+   try {
+     const admins = await Admin.find().populate("userId");
+     if (!admins) {
+       return res
+         .status(400)
+         .json({ success: false, error: "Failed to get admins" });
+     } else {
+       return res.status(200).json({
+         success: true,
+         data: admins,
+       });
+     }
+   } catch (error) {
+     return res
+       .status(400)
+       .json({ success: false, error: "Failed to get admins" });
+   }
+ }

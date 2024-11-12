@@ -58,7 +58,6 @@ router.post(
 router.post(
   "/update-profile/about",
   verifyToken,
-
   updateAbout
 );
 router.post(

@@ -7,8 +7,10 @@ import {
   addAdmin,
   deactivateAccount,
   deactivatedAccounts,
+  getAllAdmins,
   getAllPosts,
   isAdmin,
+  isUserAdmin,
 } from "../controllers/admin.js";
 
 const router = express.Router();
@@ -22,5 +24,7 @@ router.post("/add/:id", addAdmin);
 router.post("/deactivate-account/:id", deactivateAccount);
 router.post("/activate-account/:id", activateAccount);
 router.get("/deactivated-accounts", deactivatedAccounts);
+router.post("/is-user-admin/:id", isUserAdmin);
+router.get("/get-all-admins", getAllAdmins);
 
 export default router;
