@@ -104,12 +104,10 @@ export const checkIfSaved = async (req, res) => {
 export const getSavedJobs = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log(userId);
 
     const savedJobs = await UserJob.find({ userId, activity: "save" })
       .populate("jobId")
       .populate("userId");
-    console.log(savedJobs);
 
     if (!savedJobs) {
       res.status(400).json({
@@ -306,12 +304,11 @@ export const checkIfApplied = async (req, res) => {
 // SHORTLIST CANDIDATE
 export const shortListCandidate = async (req, res) => {
   try {
-    // console.log("Shorlist Candidate Function...");
     const { candidateId, candidateEmail, mailbody } = req.body;
-    // console.log(candidateEmail, candidateId);
+
     const jobId = req.params.id;
     const owner = req.user.id;
-    // console.log(jobId, owner);
+
     const job = await Job.findById(jobId);
 
     if (!job)
@@ -321,18 +318,14 @@ export const shortListCandidate = async (req, res) => {
         .status(400)
         .json({ success: false, error: "You are not authorized" });
     else {
-      // Send OTP via email
-      // console.log();
       await sendEmail({
         to: candidateEmail,
         subject: "Your profile has been shortlisted at MedC Job Portal",
         message: `${mailbody}`,
       });
-      // console.log("Before Change: " + job);
 
       job.noOfShortListed = job.noOfShortListed + 1;
 
-      // console.log("After Change: " + job);
       await job.save();
 
       await UserJob.findOneAndUpdate(

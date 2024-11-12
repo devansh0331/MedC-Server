@@ -4,8 +4,6 @@ export const verifyToken = async (req, res, next) => {
   try {
     var token = req.header("Authorization");
 
-    // console.log("TOKEN: " + token);
-
     if (!token) {
       return res
         .status(403)
@@ -21,7 +19,6 @@ export const verifyToken = async (req, res, next) => {
     req.user = verified; // -> verified = userId
     next();
   } catch (err) {
-    console.log(err);
     res.status(500).json({ success: false, status: 500, error: err.message });
   }
 };

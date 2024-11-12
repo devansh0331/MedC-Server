@@ -12,7 +12,7 @@ export const newPost = async (req, res) => {
 
     res.json(paginatedPosts);
   } catch (error) {
-    console.error("Error fetching posts:", error);
+   
     res.status(500).json("Internal server error");
   }
 };

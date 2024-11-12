@@ -66,7 +66,7 @@ export const getReportedProfiles = async (req, res) => {
 export const getSingleReportedProfile = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id);
+
     const profile = await ReportProfile.findById(id);
     if (!profile) {
       res.status(400).json("Profile not found!");
@@ -74,7 +74,6 @@ export const getSingleReportedProfile = async (req, res) => {
       const reports = profile.reportedBy; // Assuming this is an object with a map method
       const data = [];
       for (let [userId, reason] of Object.entries(reports)) {
-        console.log(reason);
       }
       return res.status(200).json({ success: true, data: data });
     }
@@ -86,13 +85,13 @@ export const getSingleReportedProfile = async (req, res) => {
 export const getSingleReportedProfileReasons = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("Hello");
+
     const profile = await ReportProfile.findById(id);
     if (!profile) {
       res.status(400).json({ success: false, error: "Profile not found!" });
     } else {
       const reports = profile.reportedBy; // Assuming this is an object with a map method
-      console.log(reports);
+
       const dataMap = new Map();
       const data = [];
       reports.forEach(async (reason, user) => {
@@ -102,12 +101,11 @@ export const getSingleReportedProfileReasons = async (req, res) => {
           dataMap.set(reason, dataMap.get(reason) + 1);
         }
       });
-      console.log("1");
+
       dataMap.forEach((values, keys) => {
         data.push({ reason: keys, count: values });
       });
-      console.log("2");
-      console.log(data);
+
       res.status(200).json({ success: true, data: data });
     }
   } catch (error) {}

@@ -6,7 +6,6 @@ export const addResume = async (req, res) => {
     const { fileName, fileURL } = req.body;
     const user = req.user.id;
 
-    console.log("fileURL", fileURL);
     if (fileURL != undefined) {
       await UserResume.create({
         userId: user,
@@ -34,10 +33,8 @@ export const addResume = async (req, res) => {
 export const getResume = async (req, res) => {
   try {
     const user = req.user.id;
-    console.log(user);
 
     const resume = await UserResume.find({ userId: user });
-    console.log(resume);
 
     if (!resume) {
       return res.status(404).json({

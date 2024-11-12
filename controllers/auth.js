@@ -50,7 +50,7 @@ export const register = async (req, res) => {
 export const signInWithGoogle = async (req, res) => {
   try {
     const { token } = req.body;
-    console.log("Token", token);
+
     const { email, name, picture, email_verified } = jwt.decode(token);
     const user = await User.findOne({ email });
 
@@ -69,7 +69,7 @@ export const signInWithGoogle = async (req, res) => {
         },
         process.env.JWT_SECRET
       );
-      console.log(user);
+
       res.status(200).json({
         success: true,
         user,
@@ -145,7 +145,6 @@ export const login = async (req, res) => {
       .json({ success: true, token: token, user: user });
   } catch (err) {
     res.status(500).json({ success: false, error: err });
-    console.log(err);
   }
 };
 
@@ -179,8 +178,7 @@ export const resetPassword = async (req, res) => {
     else {
       const salt = await bcrypt.genSalt();
       const passwordHash = await bcrypt.hash(password, salt);
-      console.log("Hello");
-      console.log("Hello2");
+
       await User.updateOne({ _id }, { password: passwordHash });
       res
         .status(200)
@@ -271,7 +269,7 @@ export const updateSocialInfo = async (req, res) => {
 export const getUser = async (req, res) => {
   try {
     const id = req.user.id;
-    console.log(id);
+
     const user = await User.findById(id);
     res.status(200).json({ success: true, data: user });
   } catch (err) {
@@ -465,19 +463,17 @@ export const deleteAchievement = async (req, res) => {
 export const addCertificate = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log("Hello");
+
     const { certificate, issuer, description } = JSON.parse(req.body.data);
 
-    console.log(certificate, issuer, description);
     let fileURL = null;
     // uploading certificate
     if (req.file && req.file.path) {
-      console.log(req.file.path);
       const file = req.file.path;
       const result = await cloudinary.uploader.upload(file);
       fileURL = result.secure_url;
     }
-    console.log("fileURL", fileURL);
+
     const newCertificate = await Certificate.create({
       userId,
       certificate,
@@ -505,14 +501,11 @@ export const updateCertificate = async (req, res) => {
     const id = req.params.id;
     const { certificate, issuer, description } = req.body;
 
-    console.log(certificate, issuer, description);
-
     const newCertificate = await Certificate.findByIdAndUpdate(id, {
       certificate,
       issuer,
       description,
     });
-    console.log(newCertificate);
 
     if (!newCertificate)
       res
@@ -626,7 +619,6 @@ export const uploadResume = async (req, res) => {
     const id = req.user.id;
 
     if (req.file && req.file.path) {
-      console.log(req.file.path);
       const resumeFile = req.file.path;
       const result = await cloudinary.uploader.upload(profile);
       let resumeURL = result.secure_url;

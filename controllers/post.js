@@ -4,10 +4,9 @@ import Comments from "../models/Comments.js";
 export const createPost = async (req, res) => {
   try {
     const { audience, description, fileURL } = req.body;
-    console.log(audience);
+
     const user = req.user.id;
-    console.log("post", audience, description, user, fileURL);
-    
+
     const post = await Post.create({
       user,
       audience,
@@ -18,7 +17,7 @@ export const createPost = async (req, res) => {
       archived: false,
       userArchived: false,
     });
-    console.log("post", post);
+
     if (!post)
       return res
         .status(400)
@@ -46,7 +45,6 @@ export const getAllPosts = async (req, res) => {
         .status(400)
         .json({ success: false, error: "Failed to get posts" });
     else {
-      console.log(posts.length);
       return res.status(200).json({
         success: true,
         status: 200,
@@ -96,7 +94,6 @@ export const deletePostByAdmin = async (req, res) => {
         .status(200)
         .json({ success: true, message: "Post deleted successfully" });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ success: false, error: "Failed to delete post!" });
@@ -197,7 +194,6 @@ export const getAllLivePosts = async (req, res) => {
         .status(400)
         .json({ success: false, error: "Failed to get posts" });
     else {
-      console.log(posts.length);
       return res.status(200).json({
         success: true,
         status: 200,
@@ -226,7 +222,6 @@ export const getAllArchivedPosts = async (req, res) => {
         .status(400)
         .json({ success: false, error: "Failed to get posts" });
     else {
-      console.log(posts.length);
       return res.status(200).json({
         success: true,
         status: 200,
@@ -302,7 +297,6 @@ export const archivePostbyUser = async (req, res) => {
       archived: true,
       userArchived: true,
     });
-    console.log(post);
 
     if (!post)
       return res
@@ -356,7 +350,6 @@ export const userArchivedPost = async (req, res) => {
         .status(400)
         .json({ success: false, error: "Failed to get posts" });
     else {
-      // console.log(posts.length);
       return res.status(200).json({
         success: true,
         status: 200,

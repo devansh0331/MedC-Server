@@ -9,20 +9,20 @@ import User from "../models/User.js";
 export const getSingleUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    // console.log("User Id: ", userId);
+
     const id = req.user.id;
-    // console.log("Id: ", id);
+
     const user = await User.findById(userId, {
       password: 0,
       isGoogleSignIn: 0,
     }).populate("experience");
     if (!user)
       res.status(400).json({ success: false, error: "User not found" });
-    else if (
-      (user.isDeactivated && user.isDeactivated == true)
-    ){
-      return res.status(404).json({ success: false, error: "User does not exist" });
-    }else{
+    else if (user.isDeactivated && user.isDeactivated == true) {
+      return res
+        .status(404)
+        .json({ success: false, error: "User does not exist" });
+    } else {
       return res
         .status(200)
         .json({ success: true, user: user, isExisting: userId == id });
@@ -34,21 +34,25 @@ export const getSingleUser = async (req, res) => {
 /* READ */
 export const getAllUser = async (req, res) => {
   try {
-    // const user = req.user.id;
-    // if (!user) res.status(400).json({ success: false, error: "Access Denied" });
     const users = await User.find(
       {
         $or: [
           { isDeactivated: { $exists: false } },
-          { isDeactivated: {$eq: false} },
+          { isDeactivated: { $eq: false } },
         ],
-        // $or: [
-        //   { isUserDeactivated: { $exists: false } },
-        //   { isUserDeactivated: {$eq: false} },
-        // ],
       },
-      { name: 1, _id: 1, location: 1, bio: 1, profileURL: 1, about: 1, email: 1, isUserDeactivated: 1, isDeactivated: 1 }
-    ); 
+      {
+        name: 1,
+        _id: 1,
+        location: 1,
+        bio: 1,
+        profileURL: 1,
+        about: 1,
+        email: 1,
+        isUserDeactivated: 1,
+        isDeactivated: 1,
+      }
+    );
     res.status(200).json({ success: true, data: users });
   } catch (err) {
     res.status(404).json({ success: false, error: err.message });
@@ -59,7 +63,7 @@ export const sendRequest = async (req, res) => {
   try {
     const userId = req.user.id; //"66593e0052fcb6e5f19afdff";
     const friendId = req.params.id; //"66502d9022d3c10ef958c02a";
-    // console.log(req.user.id, req.params.id);
+
     let userInFriendList = await FriendListStatus.findOne({ userId });
     let friendInFriendList = await FriendListStatus.findOne({
       userId: friendId,
@@ -77,7 +81,6 @@ export const sendRequest = async (req, res) => {
         { friendList: userInFriendList._id },
         { new: true }
       );
-      // console.log(user.friendList);
     }
     if (!friendInFriendList) {
       friendInFriendList = await FriendListStatus.create({
@@ -90,9 +93,7 @@ export const sendRequest = async (req, res) => {
         { friendList: friendInFriendList._id },
         { new: true }
       );
-      // console.log(friend.friendList);
     }
-    // console.log(userInFriendList);
     const checkFriendOfUser = userInFriendList.friendStatus.get(friendId);
     const checkUserOfFriend = friendInFriendList.friendStatus.get(userId);
 
@@ -104,8 +105,7 @@ export const sendRequest = async (req, res) => {
         checkFriendOfUser.status == 2 ||
         checkFriendOfUser == 3
       )
-        // console.log("Hello");
-      userInFriendList.friendStatus.delete(friendId);
+        userInFriendList.friendStatus.delete(friendId);
     }
     if (!checkUserOfFriend) {
       friendInFriendList.friendStatus.set(userId, 2);
@@ -122,7 +122,7 @@ export const sendRequest = async (req, res) => {
     await FriendListStatus.findByIdAndUpdate(friendInFriendList._id, {
       friendStatus: friendInFriendList.friendStatus,
     });
-    // console.log(userInFriendList);
+
     return res.json({ success: true });
   } catch (error) {
     console.log(error.message);
@@ -167,13 +167,10 @@ export const checkFriendStatus = async (req, res) => {
     const userId = req.user.id;
     const friendId = req.params.id;
 
-    // console.log("friend id: ", friendId);
-
     const userInFriendList = await FriendListStatus.findOne({
       userId,
     });
 
-    // console.log(userInFriendList);
     if (!userInFriendList) {
       return res.status(200).json({ success: true, data: 0 });
     } else {
@@ -204,7 +201,6 @@ export const getReceivedRequests = async (req, res) => {
       userInFriendList.friendStatus.forEach((element, value) => {
         if (element === 2) {
           arr.push({ _id: value });
-          // console.log(arr);
         }
       });
       if (arr.length > 0) {
@@ -237,7 +233,6 @@ export const getSentRequests = async (req, res) => {
       userInFriendList.friendStatus.forEach((element, value) => {
         if (element === 1) {
           arr.push({ _id: value });
-          // console.log(arr);
         }
       });
       if (arr.length > 0) {
@@ -256,9 +251,9 @@ export const getSentRequests = async (req, res) => {
 export const getConnections = async (req, res) => {
   try {
     const userId = req.user.id;
-    // console.log(userId);
+
     const singleUser = await User.findById(userId);
-    // console.log(singleUser);
+
     const userInFriendList = await FriendListStatus.findOne({
       userId,
     });
@@ -271,7 +266,6 @@ export const getConnections = async (req, res) => {
       userInFriendList.friendStatus.forEach((element, value) => {
         if (element === 3) {
           arr.push({ _id: value });
-          // console.log(arr);
         }
       });
       if (arr.length > 0) {
