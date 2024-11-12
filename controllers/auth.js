@@ -53,17 +53,23 @@ export const signInWithGoogle = async (req, res) => {
     console.log("Token", token);
     const { email, name, picture, email_verified } = jwt.decode(token);
     const user = await User.findOne({ email });
-    if(user.isDeactivated == true) return res.status(404).json({ success: false, error: "User does not exist." });
+
     if (email_verified == false)
       res.status(400).json({ success: false, error: "Email not verified" });
 
     if (user) {
+      if (user.isDeactivated != undefined)
+        if (user.isDeactivated == true)
+          return res
+            .status(404)
+            .json({ success: false, error: "User does not exist." });
       const jwttoken = jwt.sign(
         {
           id: user._id,
         },
         process.env.JWT_SECRET
       );
+      console.log(user);
       res.status(200).json({
         success: true,
         user,
@@ -129,7 +135,11 @@ export const login = async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     delete user.password;
-    if(user.isDeactivated == true) return res.status(404).json({ success: false, error: "User does not exist. " });
+    if (user.isDeactivated != undefined)
+      if (user.isDeactivated == true)
+        return res
+          .status(404)
+          .json({ success: false, error: "User does not exist. " });
     res // res.status(200).json({ token, user: user.email});
       .status(200)
       .json({ success: true, token: token, user: user });
