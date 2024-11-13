@@ -9,12 +9,16 @@ export const createJob = async (req, res) => {
       jobTitle,
       organziationName,
       location,
-      salaryRange,
+      minimumSalary,
+      maximumSalary,
+      salaryType,
       requiredQualification,
       employementType,
       minExperience,
       lastDateToApply,
       description,
+      archived,
+      userArchived,
     } = req.body;
 
     const newJob = await Job.create({
@@ -22,14 +26,16 @@ export const createJob = async (req, res) => {
       jobTitle,
       organziationName,
       location,
-      salaryRange,
+      minimumSalary,
+      maximumSalary,
+      salaryType,
       requiredQualification,
       employementType,
       minExperience,
       lastDateToApply,
       description,
-      archived: false,
-      userArchived: false,
+      archived,
+      userArchived,
       noOfApplications: 0,
       noOfHirings: 0,
     });
@@ -108,6 +114,53 @@ export const deleteJob = async (req, res) => {
       } else {
         return res.status(200).json({ success: true, job });
       }
+    }
+  } catch (error) {
+    return res.status(400).json({ success: false, error: "No job found!" });
+  }
+};
+
+export const editJob = async (req, res) => {
+  try {
+    const {
+      jobTitle,
+      organziationName,
+      location,
+      minimumSalary,
+      maximumSalary,
+      salaryType,
+      requiredQualification,
+      employementType,
+      minExperience,
+      lastDateToApply,
+      description,
+      archived,
+      userArchived,
+    } = req.body;
+    const _id = req.params.id;
+    const job = await Job.findByIdAndUpdate(
+      _id,
+      {
+        jobTitle,
+        organziationName,
+        location,
+        minimumSalary,
+        maximumSalary,
+        salaryType,
+        requiredQualification,
+        employementType,
+        minExperience,
+        lastDateToApply,
+        description,
+        archived,
+        userArchived,
+      },
+      { new: true }
+    );
+    if (!job) {
+      return res.status(400).json({ success: false, error: "No job found!" });
+    } else {
+      return res.status(200).json({ success: true, job });
     }
   } catch (error) {
     return res.status(400).json({ success: false, error: "No job found!" });

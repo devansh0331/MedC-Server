@@ -169,10 +169,13 @@ export const applyJob = async (req, res) => {
     });
 
     if (newJobApply) {
+      const job = await Job.findById(jobId);
+      job.noOfApplications = job.noOfApplications + 1;
+      await job.save();
       res.status(200).json({
         success: true,
         message: "Applied successfully",
-      });
+      })
     }
     if (!newJobApply) {
       res.status(400).json({
@@ -204,6 +207,9 @@ export const deleteJobApplication = async (req, res) => {
       });
     }
     if (jobApplication) {
+      const job = await Job.findById(jobId);
+      job.noOfApplications = job.noOfApplications - 1;
+      await job.save();
       res.status(200).json({
         success: true,
         message: "Job application deleted successfully",
@@ -327,6 +333,11 @@ export const shortListCandidate = async (req, res) => {
       job.noOfShortListed = job.noOfShortListed + 1;
 
       await job.save();
+
+      await Admin.findOneAndUpdate(
+        { userId: "664f9e4252492b36eb5c94cf" },
+        { $inc: { noOfShortlisted: 1 } }
+      );
 
       await UserJob.findOneAndUpdate(
         { userId: candidateId, jobId, activity: "apply" },
