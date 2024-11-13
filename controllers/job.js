@@ -70,7 +70,7 @@ export const createJob = async (req, res) => {
 
 export const getAllJobs = async (req, res) => {
   try {
-    const jobs = await Job.find().populate("user").sort({ createdAt: -1 });
+    const jobs = await Job.find({archived: false}).populate("user").sort({ createdAt: -1 });
 
     if (!jobs)
       return res
