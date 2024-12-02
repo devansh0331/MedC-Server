@@ -25,6 +25,14 @@ import fakeJobsData from "./FakeDatabase.js";
 import Post from "./models/Post.js";
 import fakePostsData from "./FakePosts.js";
 import UserJob from "./models/UserJob.js";
+import UserResume from "./models/UserResume.js";
+import Achievement from "./models/Achievement.js";
+import Certificate from "./models/Certificate.js";
+import Comments from "./models/Comments.js";
+import Education from "./models/Education.js";
+import FriendListStatus from "./models/FriendStatus.js";
+import ReportProfile from "./models/ReportProfile.js";
+import Experience from "./models/Experience.js";
 // const cloudinary = require('cloudinary').v2;
 
 // CONFIGURATIONS
@@ -72,10 +80,8 @@ const PORT = process.env.PORT || 5000;
 // MONGOOSE SETUP
 mongoose
   .connect(process.env.MONGO_URL, {})
-  .then(() => {
+  .then( async () => {
     console.log(`Server Port: ${PORT}`);
-    // Job.insertMany(fakeJobsData);
-    // Post.insertMany(fakePostsData);
   })
   .catch((error) => console.log(`${error} did not connect`));
 
