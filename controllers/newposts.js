@@ -4,7 +4,10 @@ export const newPost = async (req, res) => {
   const limit = 10; // Number of posts per page
   const offset = req.query.page ? (parseInt(req.query.page) - 1) * limit : 0;
   try {
-    const paginatedPosts = await Post.find()
+    const paginatedPosts = await Post.find({
+      archived: false,
+      userArchived: false,
+    })
       .sort({ createdAt: -1 })
       .skip(offset)
       .limit(limit)
@@ -12,7 +15,6 @@ export const newPost = async (req, res) => {
 
     res.json(paginatedPosts);
   } catch (error) {
-   
     res.status(500).json("Internal server error");
   }
 };
