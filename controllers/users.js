@@ -58,7 +58,6 @@ export const getAllUser = async (req, res) => {
     res.status(404).json({ success: false, error: err.message });
   }
 };
-
 export const sendRequest = async (req, res) => {
   try {
     const userId = req.user.id; //"66593e0052fcb6e5f19afdff";
@@ -128,7 +127,6 @@ export const sendRequest = async (req, res) => {
     console.log(error.message);
   }
 };
-
 export const acceptRequest = async (req, res) => {
   try {
     const userId = req.user.id; // "66502d9022d3c10ef958c02a";
@@ -161,7 +159,6 @@ export const acceptRequest = async (req, res) => {
     console.log(error.message);
   }
 };
-
 export const checkFriendStatus = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -183,7 +180,6 @@ export const checkFriendStatus = async (req, res) => {
     res.status(400).json({ success: false, error: err.message });
   }
 };
-
 export const getReceivedRequests = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -346,3 +342,31 @@ export const deactivateAccountbyUser = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+export const deleteUserPermanently = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if(userId === "66502d9022d3c10ef958c02a" || userId === "664f9e4252492b36eb5c94cf" || userId === "66b06ee38f70f143e9554bdc" || userId === "67397d89a96add882de11eb1"){
+      res.status(400).json({
+        success: false,
+        message: "You cannont delete this user"
+      })
+      return;
+    }
+    const response = await User.findByIdAndDelete(userId);
+    if(response){
+      res.status(200).json({
+        success: true,
+        message: "Deleted user successfully"
+      })
+    }else{
+      res.status(404).json({
+        success: false,
+        error: "User not found or could not delete user"
+      })
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal Error"
+    })
+  }
+}
