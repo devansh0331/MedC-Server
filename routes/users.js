@@ -4,6 +4,7 @@ import {
   acceptRequest,
   checkFriendStatus,
   deactivateAccountbyUser,
+  deleteUserPermanently,
   getAllUser,
   getConnections,
   getNotConnectedUsers,
@@ -33,5 +34,6 @@ router.get("/single-user/education/:id", getUserEducation);
 router.get("/single-user/achievement/:id", getUserAchievement);
 router.get("/single-user/certificate/:id", getUserCertificate);
 router.post("/deactivate-account", verifyToken, deactivateAccountbyUser);
+router.post("/delete-user/:id", verifyToken, deleteUserPermanently);
 
 export default router;

@@ -377,6 +377,31 @@ export const shortListCandidateWithoutJob = async (req, res) => {
       .json({ success: false, error: "Internal Server Error!" });
   }
 };
+
+// GET SHORTLISTED CANDIDATES
+export const getShortlistedCandidates = async (req, res) => {
+  try {
+    const jobId = req.params.id
+  const data = await UserJob.find({jobId, activity: "shortlist"}).populate("userId");
+  if(data.length <= 0){
+    res.status(200).json({
+      success: false,
+      message: "No candidates shortlisted"
+    })
+  }else{
+    res.status(200).json({
+      success: true,
+      data: data
+    })
+  } 
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get shortlisted candidates"
+    })
+  }
+}
+
 // CONTACT US MAIL
 export const contactUsMail = async (req, res) => {
   try {
