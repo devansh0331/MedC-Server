@@ -43,6 +43,21 @@ export const addAdmin = async (req, res) => {
     });
   }
 };
+export const removeAdmin = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    await Admin.findByIdAndDelete(userId);
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Admin removed successfully" });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to remove as "admin"!',
+    });
+  }
+};
 export const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find()

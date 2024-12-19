@@ -11,6 +11,7 @@ import {
   getAllPosts,
   isAdmin,
   isUserAdmin,
+  removeAdmin,
 } from "../controllers/admin.js";
 
 const router = express.Router();
@@ -21,6 +22,7 @@ router.get("/is-admin", isAdmin);
 router.get("/post/view/all", getAllPosts);
 router.post("/post/deletebyadmin/:id", deletePostByAdmin);
 router.post("/add/:id", addAdmin);
+router.post("/remove/:id", removeAdmin); // Remove Admin End-point
 router.post("/deactivate-account/:id", deactivateAccount);
 router.post("/activate-account/:id", activateAccount);
 router.get("/deactivated-accounts", deactivatedAccounts);

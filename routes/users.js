@@ -6,6 +6,7 @@ import {
   deactivateAccountbyUser,
   getAllUser,
   getConnections,
+  getNotConnectedUsers,
   getReceivedRequests,
   getSentRequests,
   getSingleUser,
@@ -19,6 +20,7 @@ import {
 const router = express.Router();
 
 router.get("/all-user", getAllUser);
+router.get("/not-connected-user", getNotConnectedUsers); // People You May Know EndPoint
 router.get("/single-user/:id", verifyToken, getSingleUser);
 router.post("/send-request/:id", verifyToken, sendRequest);
 router.post("/accept-request/:id", verifyToken, acceptRequest);

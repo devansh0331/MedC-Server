@@ -281,6 +281,83 @@ export const getConnections = async (req, res) => {
     res.status(400).json({ success: false, error: err.message });
   }
 };
+
+//  New Function -> Get Not Connected Users ********************
+
+export const getNotConnectedUsers = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const singleUser = await User.findById(userId);
+
+    const userInFriendList = await FriendListStatus.findOne({
+      userId,
+    });
+
+    var arr = [];
+
+    if (!userInFriendList) {
+      const users = await User.find(
+        {
+          $or: [
+            { isDeactivated: { $exists: false } },
+            { isDeactivated: { $eq: false } },
+          ],
+        },
+        {
+          name: 1,
+          _id: 1,
+          location: 1,
+          bio: 1,
+          profileURL: 1,
+          about: 1,
+          email: 1,
+          isUserDeactivated: 1,
+          isDeactivated: 1,
+        }
+      );
+      return res.status(200).json({ success: true, data: users });
+    } else {
+      userInFriendList.friendStatus.forEach((element, value) => {
+        if (element === 3) {
+          arr.push({ _id: value });
+        }
+      });
+      if (arr.length > 0) {
+        const users = await User.find(
+          {
+            $nin: arr,
+            $or: [
+              { isDeactivated: { $exists: false } },
+              { isDeactivated: { $eq: false } },
+            ],
+          },
+          {
+            name: 1,
+            _id: 1,
+            location: 1,
+            bio: 1,
+            profileURL: 1,
+            about: 1,
+            email: 1,
+            isUserDeactivated: 1,
+            isDeactivated: 1,
+          }
+        );
+        return res.status(400).json({ success: true, data: users });
+      } else {
+        return res
+          .status(400)
+          .json({ success: false, error: "No connections!" });
+      }
+    }
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+};
+
+// *****************************************************************
+
 export const getUserExperience = async (req, res) => {
   try {
     const id = req.params.id;
