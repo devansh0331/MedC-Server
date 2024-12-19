@@ -46,7 +46,7 @@ export const addAdmin = async (req, res) => {
 export const removeAdmin = async (req, res) => {
   try {
     const userId = req.params.id;
-    await Admin.findByIdAndDelete(userId);
+    await Admin.findOneAndDelete({ userId });
 
     return res
       .status(200)
@@ -84,13 +84,6 @@ export const getAllPosts = async (req, res) => {
 export const deactivateAccount = async (req, res) => {
   try {
     const id = req.params.id;
-    if(id === "66502d9022d3c10ef958c02a" || id === "664f9e4252492b36eb5c94cf" || id === "66b06ee38f70f143e9554bdc" || id === "67397d89a96add882de11eb1"){
-      res.status(400).json({
-        success: false,
-        error: "You cannont delete this user"
-      })
-      return;
-    }
     const { userEmail, mailbody } = req.body;
 
     const user = await User.findById(id);
