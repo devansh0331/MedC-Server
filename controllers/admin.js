@@ -46,11 +46,18 @@ export const addAdmin = async (req, res) => {
 export const removeAdmin = async (req, res) => {
   try {
     const userId = req.params.id;
-    await Admin.findOneAndDelete({ userId });
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Admin removed successfully" });
+    const isAdmin = await Admin.findOne({ userId });
+    if (!isAdmin) {
+      return res
+        .status(400)
+        .json({ success: false, error: "User is not Admin!" });
+    } else {
+      await Admin.findByIdAndDelete(isAdmin._id);
+      return res
+        .status(200)
+        .json({ success: true, message: "Admin removed successfully" });
+    }
   } catch (error) {
     return res.status(500).json({
       success: false,

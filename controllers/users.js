@@ -284,71 +284,35 @@ export const getNotConnectedUsers = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const singleUser = await User.findById(userId);
+    // Step 1: Fetch the friend list for the given userId
+    const friendListStatus = await FriendListStatus.findOne({ userId }).exec();
 
-    const userInFriendList = await FriendListStatus.findOne({
-      userId,
+    // Step 2: Extract friendStatus map and users with enum value '0'
+    const friendStatusMap = friendListStatus?.friendStatus || new Map();
+    const friendIds = [];
+    const requestedUserIds = [];
+
+    friendStatusMap.forEach((status, friendId) => {
+      if (status === 0) {
+        requestedUserIds.push(friendId); // Add user with enum value '0'
+      }
+      friendIds.push(friendId);
     });
 
-    var arr = [];
+    // Step 3: Find all users not in the friendStatus map and add requested users
+    const nonFriends = await User.find({
+      $or: [
+        { _id: { $nin: [...friendIds, userId] } }, // Not in friendStatus map and not self
+        { _id: { $in: requestedUserIds } }, // Users with enum value '0'
+      ],
+    }).exec();
 
-    if (!userInFriendList) {
-      const users = await User.find(
-        {
-          $or: [
-            { isDeactivated: { $exists: false } },
-            { isDeactivated: { $eq: false } },
-          ],
-        },
-        {
-          name: 1,
-          _id: 1,
-          location: 1,
-          bio: 1,
-          profileURL: 1,
-          about: 1,
-          email: 1,
-          isUserDeactivated: 1,
-          isDeactivated: 1,
-        }
-      );
-      return res.status(200).json({ success: true, data: users });
-    } else {
-      userInFriendList.friendStatus.forEach((element, value) => {
-        if (element === 3) {
-          arr.push({ _id: value });
-        }
-      });
-      if (arr.length > 0) {
-        const users = await User.find(
-          {
-            $nin: arr,
-            $or: [
-              { isDeactivated: { $exists: false } },
-              { isDeactivated: { $eq: false } },
-            ],
-          },
-          {
-            name: 1,
-            _id: 1,
-            location: 1,
-            bio: 1,
-            profileURL: 1,
-            about: 1,
-            email: 1,
-            isUserDeactivated: 1,
-            isDeactivated: 1,
-          }
-        );
-        return res.status(400).json({ success: true, data: users });
-      } else {
-        return res
-          .status(400)
-          .json({ success: false, error: "No connections!" });
-      }
-    }
-  } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
+    return res.status(200).json({ success: true, data: nonFriends });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: "Failed to fetch non-friends and requested users",
+    });
   }
 };
 
@@ -422,28 +386,33 @@ export const deactivateAccountbyUser = async (req, res) => {
 export const deleteUserPermanently = async (req, res) => {
   try {
     const userId = req.params.id;
-    if(userId === "66502d9022d3c10ef958c02a" || userId === "664f9e4252492b36eb5c94cf" || userId === "66b06ee38f70f143e9554bdc" || userId === "67397d89a96add882de11eb1"){
+    if (
+      userId === "66502d9022d3c10ef958c02a" ||
+      userId === "664f9e4252492b36eb5c94cf" ||
+      userId === "66b06ee38f70f143e9554bdc" ||
+      userId === "67397d89a96add882de11eb1"
+    ) {
       res.status(400).json({
         success: false,
-        message: "You cannont delete this user"
-      })
+        message: "You cannont delete this user",
+      });
       return;
     }
     const response = await User.findByIdAndDelete(userId);
-    if(response){
+    if (response) {
       res.status(200).json({
         success: true,
-        message: "Deleted user successfully"
-      })
-    }else{
+        message: "Deleted user successfully",
+      });
+    } else {
       res.status(404).json({
         success: false,
-        error: "User not found or could not delete user"
-      })
+        error: "User not found or could not delete user",
+      });
     }
   } catch (error) {
     res.status(500).json({
-      message: "Internal Error"
-    })
+      message: "Internal Error",
+    });
   }
-}
+};
