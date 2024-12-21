@@ -307,7 +307,10 @@ export const getNotConnectedUsers = async (req, res) => {
       ],
     }).exec();
 
-    return res.status(200).json({ success: true, data: nonFriends });
+    // Remove deactivated users from the list
+    const nonFriendsFinal = nonFriends.filter((user) => (user.isDeactivated === false));
+
+    return res.status(200).json({ success: true, data: nonFriendsFinal });
   } catch (error) {
     res.status(400).json({
       success: false,
